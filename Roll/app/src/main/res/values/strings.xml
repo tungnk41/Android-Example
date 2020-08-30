@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Roll</string>
+    <string name="btnButton">Roll</string>
+    <string name="txtContent">Press button to show image properly</string>
+    <string name="btnCountUp">Count Up</string>
+    <string name="btnReset">Reset</string>
+</resources>
