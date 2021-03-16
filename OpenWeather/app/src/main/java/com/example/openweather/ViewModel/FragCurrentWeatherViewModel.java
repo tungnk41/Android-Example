@@ -18,6 +18,7 @@ import com.example.openweather.Service.LocationInfo;
 import java.util.List;
 
 public class FragCurrentWeatherViewModel extends ViewModel {
+        private MutableLiveData<String>  tvLocation;
         private MutableLiveData<String>  imgWeatherIcon;
         private MutableLiveData<String>  tvWeatherCondition;
         private MutableLiveData<String>  tvDescription;
@@ -32,11 +33,12 @@ public class FragCurrentWeatherViewModel extends ViewModel {
                 tvFeelsLike = new MutableLiveData<>();
         }
 
-        public void initCurrentWeatherByName(String city){
+        public void getCurrentWeatherByName(String location){
 
-                OpenWeather.currentWeatherByName(AppWeather.getContext(), city, new CurrentWeatherResult() {
+                OpenWeather.currentWeatherByName(AppWeather.getContext(), location, new CurrentWeatherResult() {
                         @Override
                         public void onSuccess(CurrentWeather currentWeather) {
+                                tvLocation.setValue(currentWeather.getName()+", " + currentWeather.getSys().getCountry());
                                 imgWeatherIcon .setValue(currentWeather.getListWeather().get(0).getIcon());
                                 tvWeatherCondition .setValue(currentWeather.getListWeather().get(0).getMain());
                                 tvDescription .setValue(currentWeather.getListWeather().get(0).getDescription());
@@ -51,11 +53,12 @@ public class FragCurrentWeatherViewModel extends ViewModel {
                 });
         }
 
-        void initCurrentWeatherByLocation(String latitude,String longitude){
+        void getCurrentWeatherByLocation(String latitude,String longitude){
 
-                OpenWeather.currentWeatherByLocation(AppWeather.getContext(), latitude, longitude, new CurrentWeatherResult() {
+                OpenWeather.currentWeatherByCoordinate(AppWeather.getContext(), latitude, longitude, new CurrentWeatherResult() {
                         @Override
                         public void onSuccess(CurrentWeather currentWeather) {
+                                tvLocation.setValue(currentWeather.getName()+", " + currentWeather.getSys().getCountry());
                                 imgWeatherIcon .setValue(currentWeather.getListWeather().get(0).getIcon());
                                 tvWeatherCondition .setValue(currentWeather.getListWeather().get(0).getMain());
                                 tvDescription .setValue(currentWeather.getListWeather().get(0).getDescription());
@@ -71,6 +74,12 @@ public class FragCurrentWeatherViewModel extends ViewModel {
         }
 
 
+        public MutableLiveData<String> getTvLocation() {
+                if(tvLocation == null){
+                        tvLocation = new MutableLiveData<>();
+                }
+                return tvLocation;
+        }
 
         public MutableLiveData<String> getImgWeatherIcon() {
                 if(imgWeatherIcon == null){
@@ -109,15 +118,21 @@ public class FragCurrentWeatherViewModel extends ViewModel {
 
 
 
+        //Init weather at first start application, default get location by Gps
         public void initLastestWeatherLocation(){
-                String city = DataLocalManager.getInstance().getLastestLocation();
-                if(!city.equals("")){
-                        initCurrentWeatherByName(city);
+                String location = DataLocalManager.getInstance().getLastestLocation();
+                if(!location.equals("")){
+                        getCurrentWeatherByName(location);
                 }else{
                         List<String> locationInfo = LocationInfo.getCurrentLocationInfo();
-                        initCurrentWeatherByLocation(locationInfo.get(0),locationInfo.get(1));
-                        DataLocalManager.getInstance().saveLocation(city);
+                        getCurrentWeatherByLocation(locationInfo.get(0),locationInfo.get(1));
                 }
+        }
+
+        public void getCurrentWeatherByLocation(){
+                List<String> locationInfo = LocationInfo.getCurrentLocationInfo();
+                getCurrentWeatherByLocation(locationInfo.get(0),locationInfo.get(1));
+
         }
 
 

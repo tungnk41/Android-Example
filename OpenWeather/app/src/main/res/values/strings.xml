@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">OpenWeather</string>
     <string name="api_key">3b4d3ad9dac72a8da6c42eb87d2aecb1</string>
+    <string name="option_menu_setting">Setting</string>
 </resources>

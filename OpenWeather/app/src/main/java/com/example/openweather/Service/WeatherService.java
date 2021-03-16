@@ -46,10 +46,10 @@ public interface WeatherService {
 
 
     @GET("weather")
-    Call<CurrentWeather> getCurrentWeatherByLocation(@QueryMap Map<String,String> options);
+    Call<CurrentWeather> getCurrentWeatherByCoordinate(@QueryMap Map<String,String> options);
 
     @GET("forecast")
-    Call<Forecast> getForecastWeatherByLocation(@QueryMap Map<String,String> options);
+    Call<Forecast> getForecastWeatherByCoordinate(@QueryMap Map<String,String> options);
 
 
 }

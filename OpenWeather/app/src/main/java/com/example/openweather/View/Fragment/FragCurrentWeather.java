@@ -1,5 +1,7 @@
 package com.example.openweather.View.Fragment;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -13,14 +15,21 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.example.openweather.R;
+import com.example.openweather.View.MainActivity;
 import com.example.openweather.ViewModel.FragCurrentWeatherViewModel;
 import com.example.openweather.databinding.FragmentCurrentWeatherBinding;
 
 
 public class FragCurrentWeather extends Fragment {
 
+    TextView tvLocation;
+    ImageView imgLocation;
 
     private FragCurrentWeatherViewModel fragViewModel;
     public static FragCurrentWeather newInstance() {
@@ -41,12 +50,31 @@ public class FragCurrentWeather extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        tvLocation = getActivity().findViewById(R.id.tvLocation);
+        imgLocation = getActivity().findViewById(R.id.imgLocation);
+
         fragViewModel = new ViewModelProvider(this).get(FragCurrentWeatherViewModel.class);
         fragViewModel.initLastestWeatherLocation();
         createObserverToModel();
+
+        imgLocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onImgLocationClicked();
+            }
+        });
     }
 
+
     void createObserverToModel(){
+
+        final Observer<String> location = new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+                tvLocation.setText(s);
+            }
+        };
+
         final Observer<String> imageWeatherObserver = new Observer<String>() {
             @Override
             public void onChanged(String s) {
@@ -82,6 +110,7 @@ public class FragCurrentWeather extends Fragment {
             }
         };
 
+        fragViewModel.getTvLocation().observe(this,location);
         fragViewModel.getImgWeatherIcon().observe(this,imageWeatherObserver);
         fragViewModel.getTvWeatherCondition().observe(this,weatherCondition);
         fragViewModel.getTvDescription().observe(this,weatherDescription);
@@ -101,5 +130,9 @@ public class FragCurrentWeather extends Fragment {
                 .asBitmap()
                 .load(url)
                 .into(binding.imgWeatherIcon);
+    }
+
+    void onImgLocationClicked(){
+        fragViewModel.getCurrentWeatherByLocation();
     }
 }
