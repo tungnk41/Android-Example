@@ -97,14 +97,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     void onSwipeRefreshActived(){
+        //To do Job
+        fragCurrentWeather.refreshCurrentWeather();
         new Handler(getMainLooper()).postDelayed(new Runnable() {
             @Override
             public void run() {
-
-                //To Do job
+                //Only for running animation
                 swipeRefresh.setRefreshing(false);
             }
-        },2000);
+        },3000);
     }
 
 

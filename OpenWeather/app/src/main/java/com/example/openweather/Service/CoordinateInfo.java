@@ -3,15 +3,13 @@ package com.example.openweather.Service;
 
 import android.content.Context;
 
-import com.example.openweather.AppWeather;
-import com.example.openweather.View.MainActivity;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class LocationInfo {
+public class CoordinateInfo {
 
-    public static List<String> getCurrentLocationInfo(Context context){
+    public static List<String> getCurrentCoordinateInfo(Context context){
         List<String> result = new ArrayList<>(); //Contain lat,lon value
         double latitude = 0;
         double longitude = 0;

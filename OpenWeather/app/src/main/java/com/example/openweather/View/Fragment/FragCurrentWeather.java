@@ -49,7 +49,7 @@ public class FragCurrentWeather extends Fragment {
         tvLocation = getActivity().findViewById(R.id.tvLocation);
 
         fragViewModel = new ViewModelProvider(this).get(FragCurrentWeatherViewModel.class);
-        fragViewModel.initLastestWeatherLocation(getContext());
+        refreshCurrentWeather();
         createObserverToModel();
     }
 
@@ -192,6 +192,10 @@ public class FragCurrentWeather extends Fragment {
     }
 
     public void fetchCurrentWeatherByLocation(){
-        fragViewModel.fetchCurrentWeatherByLocation(getContext());
+        fragViewModel.fetchCurrentWeatherByCoordinate(getContext());
+    }
+
+    public void refreshCurrentWeather(){
+        fragViewModel.refreshCurrentWeather(getContext());
     }
 }

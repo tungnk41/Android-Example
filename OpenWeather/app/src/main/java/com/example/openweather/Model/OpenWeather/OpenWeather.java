@@ -20,14 +20,14 @@ public class OpenWeather {
     private static final String TAG = "OpenWeather";
     private CurrentWeatherResult currentWeatherResult;
 
-    public static void currentWeatherByName(Context context, String location, CurrentWeatherResult weatherResult) {
+    public static void currentWeatherByLocation(Context context, String location, CurrentWeatherResult weatherResult) {
         String api_key = context.getResources().getString(R.string.api_key);
         Map<String,String> options = new HashMap<>();
         options.put("q",location);
         options.put("units","metric");
         options.put("lang","en");
         options.put("appid",api_key);
-        WeatherService.weatherService.getCurrentWeatherByName(options)
+        WeatherService.weatherService.getCurrentWeatherByLocation(options)
                 .enqueue(new Callback<CurrentWeather>() {
                     @Override
                     public void onResponse(Call<CurrentWeather> call, Response<CurrentWeather> response) {
@@ -56,7 +56,7 @@ public class OpenWeather {
         options.put("cnt","5");
         options.put("appid",api_key);
 
-        WeatherService.weatherService.getForecastWeatherByName(options)
+        WeatherService.weatherService.getForecastWeatherByLocation(options)
                 .enqueue(new Callback<Forecast>() {
                     @Override
                     public void onResponse(Call<Forecast> call, Response<Forecast> response) {
@@ -75,11 +75,7 @@ public class OpenWeather {
                 });
     }
 
-
-
     /* Get by Location */
-
-
 
     public static void currentWeatherByCoordinate(Context context, String latitude,String longitude, CurrentWeatherResult weatherResult) {
         String api_key = context.getResources().getString(R.string.api_key);

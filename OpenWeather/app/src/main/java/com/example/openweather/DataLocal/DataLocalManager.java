@@ -7,6 +7,7 @@ import com.example.openweather.AppWeather;
 public class DataLocalManager {
 
     static final String LASTEST_LOCATION = "LASTEST_LOCATION";
+    static final String LASTEST_UPDATE_BY_LOCATION = "LASTEST_UPDATE_BY_LOCATION";
     private static DataLocalManager instance;
     private Preferences preferences;
 
@@ -26,8 +27,16 @@ public class DataLocalManager {
         DataLocalManager.getInstance().preferences.putStringValue(LASTEST_LOCATION,location);
     }
 
-    public  String getLastestLocation(){
+    public  String getLastestSaveLocation(){
         return DataLocalManager.getInstance().preferences.getStringValue(LASTEST_LOCATION);
+    }
+
+    public void setLastestUpdateByLocation(){
+        DataLocalManager.getInstance().preferences.putBooleanValue(LASTEST_UPDATE_BY_LOCATION,true);
+    }
+
+    public Boolean isLastestUpdateByLocation(){
+        return DataLocalManager.getInstance().preferences.getBooleanValue(LASTEST_UPDATE_BY_LOCATION);
     }
 
 }

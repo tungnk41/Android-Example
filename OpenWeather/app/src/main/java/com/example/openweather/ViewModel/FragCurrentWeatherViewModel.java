@@ -14,7 +14,7 @@ import com.example.openweather.DataLocal.DataLocalManager;
 import com.example.openweather.Model.CurrentWeather.CurrentWeather;
 import com.example.openweather.Model.OpenWeather.CurrentWeatherResult;
 import com.example.openweather.Model.OpenWeather.OpenWeather;
-import com.example.openweather.Service.LocationInfo;
+import com.example.openweather.Service.CoordinateInfo;
 
 import java.util.List;
 
@@ -48,9 +48,9 @@ public class FragCurrentWeatherViewModel extends ViewModel {
                 tvSunSet = new MutableLiveData<>();
         }
 
-        public void getCurrentWeatherByName(String location){
+        public void getCurrentWeatherByLocation(String location){
 
-                OpenWeather.currentWeatherByName(AppWeather.getContext(), location, new CurrentWeatherResult() {
+                OpenWeather.currentWeatherByLocation(AppWeather.getContext(), location, new CurrentWeatherResult() {
                         @Override
                         public void onSuccess(CurrentWeather currentWeather) {
                                 tvLocation.setValue(currentWeather.getName()+", " + currentWeather.getSys().getCountry());
@@ -75,7 +75,7 @@ public class FragCurrentWeatherViewModel extends ViewModel {
                 });
         }
 
-        void getCurrentWeatherByLocation(String latitude,String longitude){
+        void getCurrentWeatherByCoordinate(String latitude,String longitude){
 
                 OpenWeather.currentWeatherByCoordinate(AppWeather.getContext(), latitude, longitude, new CurrentWeatherResult() {
                         @Override
@@ -192,19 +192,19 @@ public class FragCurrentWeatherViewModel extends ViewModel {
 
 
         //Init weather at first start application, default get location by Gps
-        public void initLastestWeatherLocation(Context context){
-                String location = DataLocalManager.getInstance().getLastestLocation();
-                if(!location.equals("")){
-                        getCurrentWeatherByName(location);
+        public void refreshCurrentWeather(Context context){
+                if(DataLocalManager.getInstance().isLastestUpdateByLocation()){
+                        String location = DataLocalManager.getInstance().getLastestSaveLocation();
+                        getCurrentWeatherByLocation(location);
                 }else{
-                        List<String> locationInfo = LocationInfo.getCurrentLocationInfo(context);
-                        getCurrentWeatherByLocation(locationInfo.get(0),locationInfo.get(1));
+                        List<String> coordinateInfo = CoordinateInfo.getCurrentCoordinateInfo(context);
+                        getCurrentWeatherByCoordinate(coordinateInfo.get(0),coordinateInfo.get(1));
                 }
         }
 
-        public void fetchCurrentWeatherByLocation(Context context){
-                List<String> locationInfo = LocationInfo.getCurrentLocationInfo(context);
-                getCurrentWeatherByLocation(locationInfo.get(0),locationInfo.get(1));
+        public void fetchCurrentWeatherByCoordinate(Context context){
+                List<String> coordinateInfo = CoordinateInfo.getCurrentCoordinateInfo(context);
+                getCurrentWeatherByCoordinate(coordinateInfo.get(0),coordinateInfo.get(1));
 
         }
 

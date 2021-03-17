@@ -39,10 +39,10 @@ public interface WeatherService {
     * lang : vi, en
     * */
     @GET("weather")
-    Call<CurrentWeather> getCurrentWeatherByName(@QueryMap Map<String,String> options);
+    Call<CurrentWeather> getCurrentWeatherByLocation(@QueryMap Map<String,String> options);
 
     @GET("forecast")
-    Call<Forecast> getForecastWeatherByName(@QueryMap Map<String,String> options);
+    Call<Forecast> getForecastWeatherByLocation(@QueryMap Map<String,String> options);
 
 
     @GET("weather")
