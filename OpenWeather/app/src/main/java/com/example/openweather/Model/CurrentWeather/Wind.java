@@ -2,27 +2,27 @@ package com.example.openweather.Model.CurrentWeather;
 
 public class Wind {
 
-    private String speed;
-    private String deg;
+    private double speed;
+    private int deg;
 
-    public Wind(String speed, String deg) {
+    public Wind(double speed, int deg) {
         this.speed = speed;
         this.deg = deg;
     }
 
-    public String getSpeed() {
+    public double getSpeed() {
         return speed;
     }
 
-    public void setSpeed(String speed) {
+    public void setSpeed(double speed) {
         this.speed = speed;
     }
 
-    public String getDeg() {
+    public int getDeg() {
         return deg;
     }
 
-    public void setDeg(String deg) {
+    public void setDeg(int deg) {
         this.deg = deg;
     }
 

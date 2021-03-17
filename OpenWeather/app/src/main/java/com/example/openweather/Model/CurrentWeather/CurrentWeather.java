@@ -12,6 +12,7 @@ public class CurrentWeather {
     private Sys sys;
     private String name;
     private Coord coord;
+    private Clouds clouds;
 
 
     public List<Weather> getListWeather() {
@@ -62,6 +63,13 @@ public class CurrentWeather {
         this.coord = coord;
     }
 
+    public Clouds getClouds() {
+        return clouds;
+    }
+
+    public void setClouds(Clouds clouds) {
+        this.clouds = clouds;
+    }
 
     @Override
     public String toString() {
@@ -72,6 +80,7 @@ public class CurrentWeather {
                 ", sys=" + sys +
                 ", name='" + name + '\'' +
                 ", coord=" + coord +
+                ", clouds=" + clouds +
                 '}';
     }
 }

@@ -16,8 +16,16 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.OpenWeather"
         android:usesCleartextTraffic="true">
-
-        <activity android:name=".View.MainActivity">
+        <activity android:name=".View.Activity.OptionActivity"
+            android:parentActivityName=".View.MainActivity"/>
+        <activity android:name=".View.Activity.SearchActivity" />
+        <activity android:name=".View.MainActivity" />
+        <activity
+            android:name=".View.NoConnectionActivity"
+            android:theme="@style/Theme.Splash" />
+        <activity
+            android:name=".View.SplashActivity"
+            android:theme="@style/Theme.Splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

@@ -1,5 +1,6 @@
 package com.example.openweather.ViewModel;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.location.Location;
 import android.util.Log;
@@ -22,8 +23,15 @@ public class FragCurrentWeatherViewModel extends ViewModel {
         private MutableLiveData<String>  imgWeatherIcon;
         private MutableLiveData<String>  tvWeatherCondition;
         private MutableLiveData<String>  tvDescription;
-        private MutableLiveData<String>  tvTemperature;
-        private MutableLiveData<String>  tvFeelsLike;
+        private MutableLiveData<Integer>  tvTemperature;
+        private MutableLiveData<Integer>  tvFeelsLike;
+
+        private MutableLiveData<Double>  tvWindDetailSpeed;
+        private MutableLiveData<Integer>  tvHumidityDetail;
+        private MutableLiveData<Integer>  tvClouds;
+        private MutableLiveData<Integer>  tvPressureDetail;
+        private MutableLiveData<Integer>  tvSunRise;
+        private MutableLiveData<Integer>  tvSunSet;
 
         public FragCurrentWeatherViewModel() {
                 imgWeatherIcon = new MutableLiveData<>();
@@ -31,6 +39,13 @@ public class FragCurrentWeatherViewModel extends ViewModel {
                 tvDescription = new MutableLiveData<>();
                 tvTemperature = new MutableLiveData<>();
                 tvFeelsLike = new MutableLiveData<>();
+
+                tvWindDetailSpeed = new MutableLiveData<>();
+                tvHumidityDetail = new MutableLiveData<>();
+                tvClouds = new MutableLiveData<>();
+                tvPressureDetail = new MutableLiveData<>();
+                tvSunRise = new MutableLiveData<>();
+                tvSunSet = new MutableLiveData<>();
         }
 
         public void getCurrentWeatherByName(String location){
@@ -42,8 +57,15 @@ public class FragCurrentWeatherViewModel extends ViewModel {
                                 imgWeatherIcon .setValue(currentWeather.getListWeather().get(0).getIcon());
                                 tvWeatherCondition .setValue(currentWeather.getListWeather().get(0).getMain());
                                 tvDescription .setValue(currentWeather.getListWeather().get(0).getDescription());
-                                tvTemperature .setValue(String.valueOf((int)currentWeather.getMain().getTemp()));
-                                tvFeelsLike .setValue(String.valueOf((int)currentWeather.getMain().getFeelsLike()));
+                                tvTemperature .setValue((int)currentWeather.getMain().getTemp());
+                                tvFeelsLike .setValue((int)currentWeather.getMain().getFeelsLike());
+
+                                tvWindDetailSpeed.setValue(currentWeather.getWind().getSpeed());
+                                tvHumidityDetail .setValue(currentWeather.getMain().getHumidity());
+                                tvClouds .setValue(currentWeather.getClouds().getAll());
+                                tvPressureDetail .setValue(currentWeather.getMain().getPressure());
+                                tvSunRise .setValue(currentWeather.getSys().getSunrise());
+                                tvSunSet .setValue(currentWeather.getSys().getSunset());
                         }
 
                         @Override
@@ -62,8 +84,15 @@ public class FragCurrentWeatherViewModel extends ViewModel {
                                 imgWeatherIcon .setValue(currentWeather.getListWeather().get(0).getIcon());
                                 tvWeatherCondition .setValue(currentWeather.getListWeather().get(0).getMain());
                                 tvDescription .setValue(currentWeather.getListWeather().get(0).getDescription());
-                                tvTemperature .setValue(String.valueOf((int)currentWeather.getMain().getTemp()));
-                                tvFeelsLike .setValue(String.valueOf((int)currentWeather.getMain().getFeelsLike()));
+                                tvTemperature .setValue((int)currentWeather.getMain().getTemp());
+                                tvFeelsLike .setValue((int)currentWeather.getMain().getFeelsLike());
+
+                                tvWindDetailSpeed.setValue(currentWeather.getWind().getSpeed());
+                                tvHumidityDetail .setValue(currentWeather.getMain().getHumidity());
+                                tvClouds.setValue(currentWeather.getClouds().getAll());
+                                tvPressureDetail .setValue(currentWeather.getMain().getPressure());
+                                tvSunRise .setValue(currentWeather.getSys().getSunrise());
+                                tvSunSet .setValue(currentWeather.getSys().getSunset());
                         }
 
                         @Override
@@ -102,14 +131,14 @@ public class FragCurrentWeatherViewModel extends ViewModel {
                 return tvDescription;
         }
 
-        public MutableLiveData<String> getTvTemperature() {
+        public MutableLiveData<Integer> getTvTemperature() {
                 if(tvTemperature == null){
                         tvTemperature = new MutableLiveData<>();
                 }
                 return tvTemperature;
         }
 
-        public MutableLiveData<String> getTvFeelsLike() {
+        public MutableLiveData<Integer> getTvFeelsLike() {
                 if(tvFeelsLike == null){
                         tvFeelsLike = new MutableLiveData<>();
                 }
@@ -117,20 +146,64 @@ public class FragCurrentWeatherViewModel extends ViewModel {
         }
 
 
+        /***************************************************************/
+
+        public MutableLiveData<Double> getTvWindDetailSpeed() {
+                if(tvWindDetailSpeed == null){
+                        tvWindDetailSpeed = new MutableLiveData<>();
+                }
+                return tvWindDetailSpeed;
+        }
+
+        public MutableLiveData<Integer> getTvHumidityDetail() {
+                if(tvHumidityDetail == null){
+                        tvHumidityDetail = new MutableLiveData<>();
+                }
+                return tvHumidityDetail;
+        }
+
+        public MutableLiveData<Integer> getTvClouds() {
+                if(tvClouds == null){
+                        tvClouds = new MutableLiveData<>();
+                }
+                return tvClouds;
+        }
+
+        public MutableLiveData<Integer> getTvPressureDetail() {
+                if(tvPressureDetail == null){
+                        tvPressureDetail = new MutableLiveData<>();
+                }
+                return tvPressureDetail;
+        }
+
+        public MutableLiveData<Integer> getTvSunRise() {
+                if(tvSunRise == null){
+                        tvSunRise = new MutableLiveData<>();
+                }
+                return tvSunRise;
+        }
+
+        public MutableLiveData<Integer> getTvSunSet() {
+                if(tvSunSet == null){
+                        tvSunSet = new MutableLiveData<>();
+                }
+                return tvSunSet;
+        }
+
 
         //Init weather at first start application, default get location by Gps
-        public void initLastestWeatherLocation(){
+        public void initLastestWeatherLocation(Context context){
                 String location = DataLocalManager.getInstance().getLastestLocation();
                 if(!location.equals("")){
                         getCurrentWeatherByName(location);
                 }else{
-                        List<String> locationInfo = LocationInfo.getCurrentLocationInfo();
+                        List<String> locationInfo = LocationInfo.getCurrentLocationInfo(context);
                         getCurrentWeatherByLocation(locationInfo.get(0),locationInfo.get(1));
                 }
         }
 
-        public void getCurrentWeatherByLocation(){
-                List<String> locationInfo = LocationInfo.getCurrentLocationInfo();
+        public void fetchCurrentWeatherByLocation(Context context){
+                List<String> locationInfo = LocationInfo.getCurrentLocationInfo(context);
                 getCurrentWeatherByLocation(locationInfo.get(0),locationInfo.get(1));
 
         }

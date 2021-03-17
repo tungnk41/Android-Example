@@ -55,10 +55,12 @@
             android:textSize="16sp"
             android:layout_marginTop="5dp"/>
 
-       <GridLayout
+       <include
+           android:id="@+id/tvWeatherDetail"
            android:layout_width="match_parent"
-           android:layout_height="wrap_content">
-       </GridLayout>
+           android:layout_height="wrap_content"
+           android:layout_marginTop="20dp"
+           layout="@layout/fragment_current_weather_detail"/>
 
 
     </LinearLayout>

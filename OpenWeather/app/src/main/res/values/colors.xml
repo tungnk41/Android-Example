@@ -8,4 +8,8 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="transparent">#00000000</color>
+    <color name="splash">#91d5e0</color>
+    <color name="weather_detail">#e7e7e7</color>
+
+
 </resources>

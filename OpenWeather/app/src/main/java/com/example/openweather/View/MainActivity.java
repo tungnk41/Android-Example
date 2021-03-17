@@ -1,38 +1,44 @@
 package com.example.openweather.View;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
+
 
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import android.content.pm.PackageManager;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import android.content.Intent;
+
 
 import android.os.Bundle;
 
+import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 import com.example.openweather.R;
+import com.example.openweather.View.Activity.OptionActivity;
+import com.example.openweather.View.Activity.SearchActivity;
 import com.example.openweather.View.Fragment.FragCurrentWeather;
-
 
 
 public class MainActivity extends AppCompatActivity {
     Button btnSearch;
     ImageView imgMenu;
-
+    ImageView imgLocation;
+    SwipeRefreshLayout swipeRefresh;
+    FragmentManager fragmentManager;
     FragCurrentWeather fragCurrentWeather;
+    FragmentTransaction transaction;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //Must check permission onCreate function
-        requestPermission();
         initView();
 
         btnSearch.setOnClickListener(new View.OnClickListener() {
@@ -47,28 +53,60 @@ public class MainActivity extends AppCompatActivity {
                 onImgMenuClicked();
             }
         });
+        imgLocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onImgLocationClicked();
+            }
+        });
+
+        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                onSwipeRefreshActived();
+            }
+        });
     }
 
     void initView(){
         btnSearch = findViewById(R.id.btnSearch);
         imgMenu = findViewById(R.id.imgMenu);
+        imgLocation = findViewById(R.id.imgLocation);
+        swipeRefresh = findViewById(R.id.swipeRefresh);
 
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragCurrentWeather fragCurrentWeather = new FragCurrentWeather();
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        fragmentManager = getSupportFragmentManager();
+        fragCurrentWeather = new FragCurrentWeather();
+        transaction = fragmentManager.beginTransaction();
         transaction.replace(R.id.fragCurrentWeather,fragCurrentWeather);
         transaction.commit();
+
     }
 
     void onBtnSearchClicked(){
-        Toast.makeText(MainActivity.this, "Seach", Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(this, SearchActivity.class);
+        startActivity(intent);
     }
-
-
 
     void onImgMenuClicked(){
-        Toast.makeText(MainActivity.this, "Menu", Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(this, OptionActivity.class);
+        startActivity(intent);
     }
+
+    void onImgLocationClicked(){
+        fragCurrentWeather.fetchCurrentWeatherByLocation();
+    }
+
+    void onSwipeRefreshActived(){
+        new Handler(getMainLooper()).postDelayed(new Runnable() {
+            @Override
+            public void run() {
+
+                //To Do job
+                swipeRefresh.setRefreshing(false);
+            }
+        },2000);
+    }
+
 
 
 
@@ -88,18 +126,5 @@ public class MainActivity extends AppCompatActivity {
 //        });
 //    }
 //
-
-
-
-
-    void requestPermission(){
-        try {
-            if (ContextCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ) {
-                ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 101);
-            }
-        } catch (Exception e){
-            e.printStackTrace();
-        }
-    }
 
 }

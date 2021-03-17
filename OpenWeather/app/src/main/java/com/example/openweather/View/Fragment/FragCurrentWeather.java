@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.openweather.R;
+import com.example.openweather.Utils.WeatherUtil;
 import com.example.openweather.View.MainActivity;
 import com.example.openweather.ViewModel.FragCurrentWeatherViewModel;
 import com.example.openweather.databinding.FragmentCurrentWeatherBinding;
@@ -29,14 +30,9 @@ import com.example.openweather.databinding.FragmentCurrentWeatherBinding;
 public class FragCurrentWeather extends Fragment {
 
     TextView tvLocation;
-    ImageView imgLocation;
-
     private FragCurrentWeatherViewModel fragViewModel;
-    public static FragCurrentWeather newInstance() {
-        return new FragCurrentWeather();
-    }
-
     private FragmentCurrentWeatherBinding binding;
+
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -51,18 +47,10 @@ public class FragCurrentWeather extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         tvLocation = getActivity().findViewById(R.id.tvLocation);
-        imgLocation = getActivity().findViewById(R.id.imgLocation);
 
         fragViewModel = new ViewModelProvider(this).get(FragCurrentWeatherViewModel.class);
-        fragViewModel.initLastestWeatherLocation();
+        fragViewModel.initLastestWeatherLocation(getContext());
         createObserverToModel();
-
-        imgLocation.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onImgLocationClicked();
-            }
-        });
     }
 
 
@@ -96,19 +84,79 @@ public class FragCurrentWeather extends Fragment {
             }
         };
 
-        final Observer<String> temperature = new Observer<String>() {
+        final Observer<Integer> temperature = new Observer<Integer>() {
             @Override
-            public void onChanged(String s) {
-                binding.tvTemperature.setText(s + "\u2103"); //\u2109
+            public void onChanged(Integer s) {
+                String temperature = s+getStringResource(R.string.str_weather_temperature_unit_c);
+                binding.tvTemperature.setText(temperature);
             }
         };
 
-        final Observer<String> temperatureFeelsLike = new Observer<String>() {
+        final Observer<Integer> temperatureFeelsLike = new Observer<Integer>() {
             @Override
-            public void onChanged(String s) {
-                binding.tvFeelsLike.setText("Feels like " + s + "\u2103");
+            public void onChanged(Integer s) {
+                String feelsLike = getStringResource(R.string.str_weather_feels_like_temperature) + " " + s +
+                        getStringResource(R.string.str_weather_temperature_unit_c);
+                binding.tvFeelsLike.setText(feelsLike);
             }
         };
+
+        /******************************************************************************************/
+
+        final Observer<Double> windDetailSpeed = new Observer<Double>() {
+            @Override
+            public void onChanged(Double s) {
+                String windDetailSpeed = getStringResource(R.string.str_weather_detail_wind_speed) + " " + s +
+                        getStringResource(R.string.str_weather_detail_wind_speed_unit);
+                binding.tvWeatherDetail.tvWindDetailSpeed.setText(windDetailSpeed);
+            }
+        };
+
+        final Observer<Integer> humidityDetail = new Observer<Integer>() {
+            @Override
+            public void onChanged(Integer s) {
+                String humidity = getStringResource(R.string.str_weather_detail_humidity) + " " + s +
+                        getStringResource(R.string.str_weather_detail_humidity_unit);
+                binding.tvWeatherDetail.tvHumidityDetail.setText(humidity);
+            }
+        };
+
+        final Observer<Integer> clouds = new Observer<Integer>() {
+            @Override
+            public void onChanged(Integer s) {
+                String clouds = getStringResource(R.string.str_weather_detail_clouds) + " " + s +
+                        getStringResource(R.string.str_weather_detail_clouds_unit);
+                binding.tvWeatherDetail.tvClouds.setText(clouds);
+            }
+        };
+
+        final Observer<Integer> pressureDetail = new Observer<Integer>() {
+            @Override
+            public void onChanged(Integer s) {
+                String pressure = getStringResource(R.string.str_weather_detail_pressure) + " " + s +
+                        getStringResource(R.string.str_weather_detail_pressure_unit);
+                binding.tvWeatherDetail.tvPressureDetail.setText(pressure);
+            }
+        };
+
+        final Observer<Integer> sunRise = new Observer<Integer>() {
+            @Override
+            public void onChanged(Integer s) {
+                String sunrise = getStringResource(R.string.str_weather_detail_sunrise) + " " + WeatherUtil.getInstance().timeFormatter(s);
+                binding.tvWeatherDetail.tvSunRise.setText(sunrise);
+            }
+        };
+
+        final Observer<Integer> sunSet = new Observer<Integer>() {
+            @Override
+            public void onChanged(Integer s) {
+                String sunset = getStringResource(R.string.str_weather_detail_sunset) + " " + WeatherUtil.getInstance().timeFormatter(s);
+                binding.tvWeatherDetail.tvSunSet.setText(sunset);
+            }
+        };
+
+
+
 
         fragViewModel.getTvLocation().observe(this,location);
         fragViewModel.getImgWeatherIcon().observe(this,imageWeatherObserver);
@@ -116,6 +164,13 @@ public class FragCurrentWeather extends Fragment {
         fragViewModel.getTvDescription().observe(this,weatherDescription);
         fragViewModel.getTvTemperature().observe(this,temperature);
         fragViewModel.getTvFeelsLike().observe(this,temperatureFeelsLike);
+
+        fragViewModel.getTvWindDetailSpeed().observe(this,windDetailSpeed);
+        fragViewModel.getTvHumidityDetail().observe(this,humidityDetail);
+        fragViewModel.getTvClouds().observe(this,clouds);
+        fragViewModel.getTvPressureDetail().observe(this,pressureDetail);
+        fragViewModel.getTvSunRise().observe(this,sunRise);
+        fragViewModel.getTvSunSet().observe(this,sunSet);
     }
 
     @Override
@@ -124,7 +179,11 @@ public class FragCurrentWeather extends Fragment {
         binding = null;
     }
 
-    void fetchImage(String image){
+    private String getStringResource(int id){
+        return getResources().getString(id);
+    }
+
+    private void fetchImage(String image){
         final String url = "https://openweathermap.org/img/wn/" + image + "@2x.png";
         Glide.with(this)
                 .asBitmap()
@@ -132,7 +191,7 @@ public class FragCurrentWeather extends Fragment {
                 .into(binding.imgWeatherIcon);
     }
 
-    void onImgLocationClicked(){
-        fragViewModel.getCurrentWeatherByLocation();
+    public void fetchCurrentWeatherByLocation(){
+        fragViewModel.fetchCurrentWeatherByLocation(getContext());
     }
 }
