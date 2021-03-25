@@ -1,6 +1,7 @@
 package com.example.sharepreferences;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.example.sharepreferences.model.User;
@@ -17,6 +18,8 @@ import java.util.List;
 public class DataLocalManager {
     private static DataLocalManager instance;
     private Preferences preferences;
+    public static final String KEY_USER = "USER";
+    public static final String KEY_STRING = "STRING";
 
     private DataLocalManager() {
     }
@@ -33,44 +36,54 @@ public class DataLocalManager {
         return instance;
     }
 
-    public static void setPreferenceBoolean(String key, boolean value){
+    public void setPreferenceBoolean(String key, boolean value){
         DataLocalManager.getInstance().preferences.putBooleanValue(key,value);
     }
 
-    public static boolean getPreferenceBoolean(String key){
+    public boolean getPreferenceBoolean(String key){
         return DataLocalManager.getInstance().preferences.getBooleanValue(key);
     }
 
-    public static void setPreferenceString(String key, String value){
+    public void setPreferenceString(String key, String value){
         DataLocalManager.getInstance().preferences.putStringValue(key,value);
     }
 
-    public static String getPreferenceString(String key){
+    public String getPreferenceString(String key){
         return DataLocalManager.getInstance().preferences.getStringValue(key);
     }
 
-    public static void saveUser(User user){
+    public void registerPref(SharedPreferences.OnSharedPreferenceChangeListener listener){
+        preferences.registerPref(listener);
+    }
+
+    public void unRegisterPref(SharedPreferences.OnSharedPreferenceChangeListener listener){
+        preferences.unRegisterPref(listener);
+    }
+
+
+
+    public void saveUser(User user){
         Gson gson = new Gson();
         String strUserJson = gson.toJson(user);
-        DataLocalManager.getInstance().preferences.putStringValue("USER",strUserJson);
+        DataLocalManager.getInstance().preferences.putStringValue(KEY_USER,strUserJson);
 
     }
 
-    public static User getUser(){
-        String strUserJson = DataLocalManager.getInstance().preferences.getStringValue("USER");
+    public User getUser(){
+        String strUserJson = DataLocalManager.getInstance().preferences.getStringValue(KEY_USER);
         Gson gson = new Gson();
         User user = gson.fromJson(strUserJson,User.class);
         return user;
     }
 
-    public static void saveListUser(List<User> list){
+    public void saveListUser(List<User> list){
         Gson gson = new Gson();
         JsonArray jsonArray = gson.toJsonTree(list).getAsJsonArray();
         String strJsonArray = jsonArray.toString();
         DataLocalManager.getInstance().preferences.putStringValue("LIST_USER",strJsonArray);
     }
 
-    public static List<User> getListUser(){
+    public List<User> getListUser(){
         Gson gson = new Gson();
         List<User> listUser = new ArrayList<>();
         String strJsonArray = DataLocalManager.getInstance().preferences.getStringValue("LIST_USER");

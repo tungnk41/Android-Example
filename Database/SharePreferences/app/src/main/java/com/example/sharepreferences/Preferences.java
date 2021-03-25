@@ -35,4 +35,14 @@ public class Preferences {
         SharedPreferences sharedPreferences = mContext.getSharedPreferences(PREFERENCES_STRING,Context.MODE_PRIVATE);
         return sharedPreferences.getString(key,"");
     }
+
+    public void registerPref(SharedPreferences.OnSharedPreferenceChangeListener listener ){
+        SharedPreferences sharedPreferences = mContext.getSharedPreferences(PREFERENCES_STRING,Context.MODE_PRIVATE);
+        sharedPreferences.registerOnSharedPreferenceChangeListener(listener);
+    }
+
+    public void unRegisterPref(SharedPreferences.OnSharedPreferenceChangeListener listener ){
+        SharedPreferences sharedPreferences = mContext.getSharedPreferences(PREFERENCES_STRING,Context.MODE_PRIVATE);
+        sharedPreferences.unregisterOnSharedPreferenceChangeListener(listener);
+    }
 }
