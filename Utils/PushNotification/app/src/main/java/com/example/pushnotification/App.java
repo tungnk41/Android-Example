@@ -8,7 +8,7 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 
-public class NotiApplication extends Application {
+public class App extends Application {
     public static String CHANNEL_ID_1 = "01";
     public static String CHANNEL_ID_2 = "02";
 

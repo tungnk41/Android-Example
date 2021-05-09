@@ -5,20 +5,17 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
 import android.app.Notification;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.content.Context;
+import android.app.PendingIntent;
+import android.app.TaskStackBuilder;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-
-import static android.app.Notification.*;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -51,7 +48,10 @@ public class MainActivity extends AppCompatActivity {
             Uri uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
             Uri sound = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.sound);
 
-            Notification notification = new NotificationCompat.Builder(this, NotiApplication.CHANNEL_ID_1)
+            Intent intent = new Intent(this,MainActivity.class);
+            PendingIntent pendingIntent = PendingIntent.getActivity(this,0,intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+            Notification notification = new NotificationCompat.Builder(this, App.CHANNEL_ID_1)
                     .setContentTitle(title_noti)
                     .setContentText(content_noti)
                     .setStyle(new NotificationCompat.BigTextStyle().bigText(content_noti))
@@ -60,6 +60,8 @@ public class MainActivity extends AppCompatActivity {
                     .setLargeIcon(bitmap)
                     .setColor(getResources().getColor(R.color.design_default_color_primary,null))
                     .setSound(sound)
+                    .setContentIntent(pendingIntent)
+                    .setAutoCancel(true) // When click notification, it will be disappear
                     .build();
 
             NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(this);
