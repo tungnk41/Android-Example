@@ -24,8 +24,8 @@ public class BackgroundWorker extends Worker {
                 Thread.sleep(1000);
                 data += i;
             }
-            String dataInput = getInputData().getString("abc");
-            Log.d("TAG", "doWork: " + dataInput);
+            String dataInput = getInputData().getString("key");
+            Log.d("TAG", "doWork: " + dataInput + " ThreadID : " + Thread.currentThread().getName());
         } catch (InterruptedException e) {
             e.printStackTrace();
             return Result.failure();
