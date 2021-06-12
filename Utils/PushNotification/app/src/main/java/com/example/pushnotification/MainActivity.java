@@ -1,5 +1,6 @@
 package com.example.pushnotification;
 
+import androidx.annotation.ContentView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
@@ -16,6 +17,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.RemoteViews;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -29,7 +31,8 @@ public class MainActivity extends AppCompatActivity {
         btnSendNoti.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                sendNoti();
+                //sendNoti();
+                sendCustomNoti();
             }
         });
     }
@@ -67,6 +70,34 @@ public class MainActivity extends AppCompatActivity {
             NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(this);
             notificationManagerCompat.notify(NOTIFICATION_ID,notification);
         }
+    }
 
+    private void sendCustomNoti() {
+        final int NOTIFICATION_ID = 1;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_image);
+            Uri uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+            Uri sound = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.sound);
+
+            Intent intent = new Intent(this, MainActivity.class);
+            PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+            RemoteViews contentView = new RemoteViews(getPackageName(), R.layout.custom_noti);
+
+            Notification notification = new NotificationCompat.Builder(this, App.CHANNEL_ID_1)
+                    //.setStyle(new NotificationCompat.BigPictureStyle().bigPicture(bitmap).bigLargeIcon(null))
+                    .setSmallIcon(R.drawable.ic_noti)
+                    .setLargeIcon(bitmap)
+                    .setColor(getResources().getColor(R.color.design_default_color_primary, null))
+                    .setSound(sound)
+                    .setContentIntent(pendingIntent)
+                    .setAutoCancel(true) // When click notification, it will be disappear
+                    .setContent(contentView)
+                    .build();
+
+            NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(this);
+            notificationManagerCompat.notify(NOTIFICATION_ID, notification);
+        }
     }
 }
