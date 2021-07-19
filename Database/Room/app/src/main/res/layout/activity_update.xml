@@ -6,13 +6,19 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="20dp"
-    tools:context=".MainActivity">
+    tools:context=".view.UpdateActivity">
 
     <EditText
         android:id="@+id/edtUpdateUserName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="username"/>
+
+    <EditText
+        android:id="@+id/edtUpdateUserAge"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="age"/>
 
     <EditText
         android:id="@+id/edtUpdateAddress"
@@ -24,7 +30,7 @@
         android:id="@+id/btnUpdateAddUser"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Add User"
+        android:text="Update User"
         android:layout_marginTop="20dp"/>
 
 

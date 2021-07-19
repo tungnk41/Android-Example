@@ -19,6 +19,13 @@
             android:textSize="16sp"/>
 
         <TextView
+            android:id="@+id/tvUserAge"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="age"
+            android:textSize="16sp"/>
+
+        <TextView
             android:id="@+id/tvAddress"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

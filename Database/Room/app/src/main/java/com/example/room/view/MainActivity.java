@@ -1,10 +1,9 @@
-package com.example.room;
+package com.example.room.view;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.room.Database;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -18,11 +17,17 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.room.R;
 import com.example.room.database.UserDatabase;
+import com.example.room.database.dummyData.DatabaseProvider;
+import com.example.room.databinding.ActivityMainBinding;
+import com.example.room.model.Address;
+import com.example.room.model.User;
+import com.example.room.model.UserAddress;
+import com.example.room.ulti.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,39 +35,36 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     private static final int REQUEST_UPDATE_USER = 1;
-    private EditText edtUserName;
-    private EditText edtAddress;
-    private Button btnAddUser;
-    private RecyclerView rvUser;
-    private TextView tvDeleteAll;
-    private EditText edtSearch;
+    private ActivityMainBinding binding;
 
     private UserAdapter userAdapter;
-    private List<User> listUser;
+    private List<UserAddress> listUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        binding = ActivityMainBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
         initView();
+        initData();
         loadData();
 
-        btnAddUser.setOnClickListener(new View.OnClickListener() {
+        binding.btnAddUser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 addUser();
             }
         });
 
-        tvDeleteAll.setOnClickListener(new View.OnClickListener() {
+        binding.tvDeleteAll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 deleteAllUser();
             }
         });
 
-        edtSearch.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+        binding.edtSearch.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if(actionId == EditorInfo.IME_ACTION_SEARCH){
@@ -75,77 +77,71 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initView(){
-        edtUserName = findViewById(R.id.edtUserName);
-        edtAddress = findViewById(R.id.edtAddress);
-        btnAddUser = findViewById(R.id.btnAddUser);
-        rvUser = findViewById(R.id.rvUser);
-        tvDeleteAll = findViewById(R.id.tvDeleteAll);
-        edtSearch = findViewById(R.id.edtSearch);
 
         userAdapter = new UserAdapter(new UserAdapter.IClickItemUser() {
             @Override
-            public void updateUser(User user) {
-                clickUpdateUser(user);
+            public void updateUser(UserAddress user) {
+                clickUpdateUser(user.getUser().getId());
             }
 
             @Override
-            public void deleteUser(User user) {
-                clickDeleteUser(user);
+            public void deleteUser(UserAddress user) {
+                clickDeleteUser(user.getUser());
             }
         });
         listUser = new ArrayList<>();
         userAdapter.setData(listUser);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
-        rvUser.setLayoutManager(linearLayoutManager);
-        rvUser.setAdapter(userAdapter);
+        binding.rvUser.setLayoutManager(linearLayoutManager);
+        binding.rvUser.setAdapter(userAdapter);
+    }
+
+    private void initData(){
+        DatabaseProvider dataProvider = new DatabaseProvider();
+        for(User user : dataProvider.initUserList()){
+            UserDatabase.getInstance(this).userDAO().insertUser(user);
+        }
+        for(Address address : dataProvider.initAddressList()){
+            UserDatabase.getInstance(this).userDAO().insertAddress(address);
+        }
+    }
+
+    private void loadData(){
+
+
+        listUser = UserDatabase.getInstance(this).userDAO().getAllUser();
+        userAdapter.setData(listUser);
     }
 
     private void addUser() {
-        String strUserName = edtUserName.getText().toString().trim();
-        String strAddress = edtAddress.getText().toString().trim();
+        String strUserName = binding.edtUserName.getText().toString().trim();
+        String strUserAge = binding.edtUserAge.getText().toString().trim();
+        String strAddress = binding.edtAddress.getText().toString().trim();
 
-        if(TextUtils.isEmpty(strUserName) || TextUtils.isEmpty(strAddress)){
+        if(TextUtils.isEmpty(strUserName) || TextUtils.isEmpty(strAddress) || TextUtils.isEmpty(strUserAge)){
             Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        User user = new User(strUserName,strAddress,2000);
-        if(isUserExist(user)){
-            Toast.makeText(this, "User exist", Toast.LENGTH_SHORT).show();
-            return;
-        }
+        User user = new User(strUserName,Integer.valueOf(strUserAge));
+        Address address = new Address(strAddress);
+
         UserDatabase.getInstance(this).userDAO().insertUser(user);
+        UserDatabase.getInstance(this).userDAO().insertAddress(address);
         Toast.makeText(this, "Success", Toast.LENGTH_SHORT).show();
-        edtAddress.setText("");
-        edtUserName.setText("");
+        binding.edtAddress.setText("");
+        binding.edtUserName.setText("");
+        binding.edtAddress.setText("");
         loadData();
-        hideSoftKeyboard();
+        Utils.getInstance().hideSoftKeyboard(this);
 
     }
-    private void hideSoftKeyboard(){
-        try {
-            InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
-            inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),0);
-        }catch (NullPointerException ex){
-            ex.printStackTrace();
-        }
-    }
-    private void loadData(){
-        listUser = UserDatabase.getInstance(this).userDAO().getListUser();
-        userAdapter.setData(listUser);
-    }
 
-    private boolean isUserExist(User user){
-        List<User> list = UserDatabase.getInstance(this).userDAO().checkUser(user.getUserName());
-        return list!=null && !list.isEmpty();
-    }
 
-    private void clickUpdateUser(User user) {
-        Intent intent = new Intent(MainActivity.this,UpdateActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("user",user);
-        intent.putExtras(bundle);
+    private void clickUpdateUser(int userID) {
+        Intent intent = new Intent(MainActivity.this, UpdateActivity.class);
+        intent.putExtra("user_id", userID);
         startActivityForResult(intent,REQUEST_UPDATE_USER);
     }
 
@@ -182,11 +178,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void handleSearchUser(){
-        String strSearch = edtSearch.getText().toString().trim();
+        String strSearch = binding.edtSearch.getText().toString().trim();
         listUser.clear();
         listUser = UserDatabase.getInstance(this).userDAO().searchUser(strSearch);
         userAdapter.setData(listUser);
-        hideSoftKeyboard();
+        Utils.getInstance().hideSoftKeyboard(this);
     }
 
     @Override

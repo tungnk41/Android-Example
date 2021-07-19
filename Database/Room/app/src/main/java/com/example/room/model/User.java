@@ -1,4 +1,4 @@
-package com.example.room;
+package com.example.room.model;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
@@ -7,21 +7,18 @@ import androidx.room.PrimaryKey;
 import java.io.Serializable;
 
 @Entity(tableName = "user")
-public class User implements Serializable {
+public class User{
 
     @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name ="user_id")
     private int id;
-
     //@ColumnInfo(name ="username")
     private String userName;
-    private String address;
-    private int year;
+    private int age;
 
-
-    public User(String userName, String address, int year) {
+    public User(String userName, int age) {
         this.userName = userName;
-        this.address = address;
-        this.year = year;
+        this.age = age;
     }
 
     public int getId() {
@@ -40,20 +37,20 @@ public class User implements Serializable {
         this.userName = userName;
     }
 
-    public String getAddress() {
-        return address;
+    public int getAge() {
+        return age;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setAge(int age) {
+        this.age = age;
     }
 
-    public int getYear() {
-        return year;
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", userName='" + userName + '\'' +
+                ", age=" + age +
+                '}';
     }
-
-    public void setYear(int year) {
-        this.year = year;
-    }
-
 }
