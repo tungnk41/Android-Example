@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/app_navigation"
+    app:startDestination="@id/nav_host">
+
+    <fragment
+        android:id="@+id/nav_host"
+        android:name="com.example.navigation.NavHost"
+        android:label="nav_host"
+        tools:layout="@layout/fragment_navhost" />
+    <fragment
+        android:id="@+id/fragment_1"
+        android:name="com.example.navigation.Fragment_1"
+        android:label="fragment_1"
+        tools:layout="@layout/fragment_1" />
+    <fragment
+        android:id="@+id/fragment_2"
+        android:name="com.example.navigation.Fragment_2"
+        android:label="fragment_2"
+        tools:layout="@layout/fragment_2" />
+    <fragment
+        android:id="@+id/fragmentDeeplink"
+        android:name="com.example.navigation.FragmentDeeplink"
+        android:label="fragment_deeplink"
+        tools:layout="@layout/fragment_deeplink">
+
+        <deepLink app:uri="www.example.com/{arg}"/>
+
+        <argument android:name="arg" app:argType="string"/>
+
+    </fragment>
+
+</navigation>
