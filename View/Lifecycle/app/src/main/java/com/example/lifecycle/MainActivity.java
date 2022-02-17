@@ -10,40 +10,26 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
+import com.example.lifecycle.activity.ActivityHost;
+import com.example.lifecycle.activity.Activity_1;
+import com.example.lifecycle.fragment.FragmentHost;
+import com.example.lifecycle.fragment.Fragment_1;
+import com.example.lifecycle.utils.Utils;
+
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
-    private Button btnStartActivity;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+//        startActivity(new Intent(MainActivity.this, ActivityHost.class));
 
-        btnStartActivity = findViewById(R.id.btnStartActivity);
-        btnStartActivity.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity();
-            }
-        });
-        initFrag();
-
+        Utils.getInstance().navigate(getSupportFragmentManager(),R.id.fragment_holder,new FragmentHost());
         Log.i(TAG, "onCreate: ");
     }
-
-    void startActivity(){
-        Intent intent = new Intent(this, ActivityEx.class);
-        startActivity(intent);
-    }
-
-    void initFrag(){
-        FragmentEx fragmentEx = new FragmentEx();
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.content_frag, fragmentEx);
-        fragmentTransaction.commit();
-    }
-
 
     @Override
     protected void onRestart() {

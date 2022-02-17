@@ -9,7 +9,16 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.LifeCycle">
-        <activity android:name=".ActivityEx"></activity>
+        <activity
+            android:name=".activity.ActivityHost"
+            android:exported="false" />
+        <activity
+            android:name=".activity.Activity_3"
+            android:exported="false" />
+        <activity
+            android:name=".activity.Activity_2"
+            android:exported="false" />
+        <activity android:name=".activity.Activity_1" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

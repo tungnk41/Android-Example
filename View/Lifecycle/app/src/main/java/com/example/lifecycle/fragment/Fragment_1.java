@@ -1,4 +1,4 @@
-package com.example.lifecycle;
+package com.example.lifecycle.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -11,11 +11,16 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+
+import com.example.lifecycle.R;
+import com.example.lifecycle.utils.Utils;
 
 
-public class FragmentEx extends Fragment {
+public class Fragment_1 extends Fragment {
 
-    private static final String TAG = "FragmentEx";
+    private static final String TAG = "Fragment_1";
+    private Button startFragment2;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -28,7 +33,18 @@ public class FragmentEx extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         Log.i(TAG, "onCreateView: ");
-        return inflater.inflate(R.layout.fragment_e_x, container, false);
+
+        View view =  inflater.inflate(R.layout.fragment_1, container, false);
+
+        startFragment2 = view.findViewById(R.id.btnStartFragment2);
+        startFragment2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Utils.getInstance().navigate(getFragmentManager(),R.id.fragment_holder,new Fragment_2());
+            }
+        });
+
+        return view;
     }
 
     @Override
