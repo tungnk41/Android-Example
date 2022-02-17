@@ -14,7 +14,7 @@ import com.example.lifecycle.R;
 
 public class Activity_1 extends AppCompatActivity {
 
-    private static final String TAG = "ActivityEx";
+    private static final String TAG = "Activity_1";
     private Button btnStartActivity;
 
     @Override

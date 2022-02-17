@@ -25,9 +25,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-//        startActivity(new Intent(MainActivity.this, ActivityHost.class));
+        startActivity(new Intent(MainActivity.this, ActivityHost.class));
 
-        Utils.getInstance().navigate(getSupportFragmentManager(),R.id.fragment_holder,new FragmentHost());
+//        Utils.getInstance().navigate(getSupportFragmentManager(),R.id.fragment_holder,new FragmentHost());
         Log.i(TAG, "onCreate: ");
     }
 
