@@ -1,0 +1,28 @@
+CREATE TABLE note(
+    id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    title TEXT NOT NULL,
+    content TEXT NOT NULL,
+    user_id INTEGER NOT NULL,
+    FOREIGN KEY(user_id) REFERENCES user(id)
+);
+
+findById:
+SELECT * FROM note WHERE id = :id;
+
+findAll:
+SELECT * FROM note WHERE user_id = :user_id;
+
+insert:
+INSERT OR REPLACE INTO note VALUES(?, ?, ?,?);
+
+update:
+UPDATE note SET title = :title, content = :content WHERE id = :id;
+
+deleteById:
+DELETE FROM note WHERE id = :id;
+
+delete:
+DELETE FROM note WHERE user_id = :user_id;
+
+insert_id:
+SELECT last_insert_rowid();

@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "508212474365",
+    "firebase_url": "https://firerealtime-7447a-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "firerealtime-7447a",
+    "storage_bucket": "firerealtime-7447a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:508212474365:android:de49a4a4c17841b22ae994",
+        "android_client_info": {
+          "package_name": "com.example.firerealtime"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "508212474365-n8gnpt49sm5gfl7mc4l2k9rpud1ru0q4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCbVB9zPjmfk9NeKt5wUZOIm8m-uJ7DfCc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "508212474365-n8gnpt49sm5gfl7mc4l2k9rpud1ru0q4.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

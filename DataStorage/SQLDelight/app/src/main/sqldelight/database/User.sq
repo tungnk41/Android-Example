@@ -1,0 +1,23 @@
+CREATE TABLE  user(
+    id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    username TEXT NOT NULL,
+    password TEXT NOT NULL
+);
+
+findByNameAndPassword:
+SELECT * FROM user WHERE username = :username AND password = :password;
+
+findAll:
+SELECT * FROM user;
+
+insert:
+INSERT OR REPLACE INTO user VALUES(?, ?, ?);
+
+update:
+UPDATE user SET password = :password, username = :username WHERE id = :id;
+
+delete:
+DELETE FROM user WHERE username = :username;
+
+insert_id:
+SELECT last_insert_rowid();

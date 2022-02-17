@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.contentprovider">
+    <permission
+        android:name="com.example.contentprovider.provider.permission.READ_PROVIDER"
+        android:label="Read Database"
+        android:protectionLevel="normal"/>
+    <permission
+        android:name="com.example.contentprovider.provider.permission.WRITE_PROVIDER"
+        android:label="Write Database"
+        android:protectionLevel="normal"/>
+    <application
+        android:name=".App"
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.ContentProvider">
+        <activity android:name=".MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <provider
+            android:name=".ContentPrividerExt"
+            android:authorities="com.example.contentprovider.provider"
+            android:enabled="true"
+            android:exported="true"
+            android:readPermission="com.example.contentprovider.provider.permission.READ_PROVIDER"
+            android:writePermission="com.example.contentprovider.provider.permission.WRITE_PROVIDER"/>
+    </application>
+
+</manifest>
