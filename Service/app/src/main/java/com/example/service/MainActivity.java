@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -39,7 +40,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         btnStartService = findViewById(R.id.btnStartService);
-
         btnStartService.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -83,6 +83,7 @@ public class MainActivity extends AppCompatActivity {
         if(isBounded){
             //Call method from Bound service
             boundService.makeToast();
+            Log.d("TAG", "clickStart: " + boundService.getListString(1).toString());
         }
 
         //For ForegroundService
@@ -91,8 +92,8 @@ public class MainActivity extends AppCompatActivity {
 //        startForegroundService(fgIntent);
 
         //IntentService
-        Intent intentServ = new Intent(this,IntentServiceEx.class);
-        IntentServiceEx.enqueueWork(this,intentServ);
+//        Intent intentServ = new Intent(this,IntentServiceEx.class);
+//        IntentServiceEx.enqueueWork(this,intentServ);
     }
 
 }
