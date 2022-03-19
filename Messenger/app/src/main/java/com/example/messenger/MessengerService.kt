@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.*
 import android.util.Log
+import com.example.messenger.model.ModelData
 
 class MessengerService : Service() {
 
@@ -39,7 +40,7 @@ class MessengerService : Service() {
 
     private fun sendDataToClients() {
         mClients.forEach { client ->
-            client.send(Message.obtain(null,MSG_SEND_DATA_TO_CLIENT,"Data send from Service to Client"))
+            client.send(Message.obtain(null,MSG_SEND_DATA_TO_CLIENT, listOf<ModelData>(ModelData(id = 1,name = "data 1"),ModelData(id = 2,name = "data 2"))))
         }
     }
 

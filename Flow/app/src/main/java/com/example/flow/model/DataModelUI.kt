@@ -1,4 +1,6 @@
 package com.example.flow.model
 
-class DataModelUI {
-}
+data class DataModelUI(
+    val id: Int,
+    val value: Int
+)
