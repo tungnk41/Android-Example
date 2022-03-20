@@ -38,9 +38,22 @@ class MessengerService : Service() {
         return mMessenger.binder
     }
 
+//    private fun sendDataToClients() {
+//        mClients.forEach { client ->
+//            client.send(Message.obtain(null,MSG_SEND_DATA_TO_CLIENT, ModelData(id = 1,name = "data 1")))
+//        }
+//    }
+
+    //For Different Process
     private fun sendDataToClients() {
         mClients.forEach { client ->
-            client.send(Message.obtain(null,MSG_SEND_DATA_TO_CLIENT, listOf<ModelData>(ModelData(id = 1,name = "data 1"),ModelData(id = 2,name = "data 2"))))
+            val bundle = Bundle().apply {
+                putParcelableArrayList("data", arrayListOf<ModelData>(ModelData(id = 1, name = "text 1"),ModelData(id = 1, name = "text 1")))
+            }
+
+            val msg : Message = Message.obtain(null,MSG_SEND_DATA_TO_CLIENT)
+            msg.data = bundle
+            client.send(msg)
         }
     }
 

@@ -6,9 +6,9 @@ import android.content.Intent
 import android.content.ServiceConnection
 import android.os.*
 import android.util.Log
-import androidx.appcompat.app.AppCompatActivity
 import android.widget.Button
-import java.lang.Exception
+import androidx.appcompat.app.AppCompatActivity
+import com.example.messenger.model.ModelData
 
 class MainActivity : AppCompatActivity() {
 
@@ -20,6 +20,7 @@ class MainActivity : AppCompatActivity() {
         private const val MSG_SEND_DATA_TO_SERVICE = 5
         const val TAG = "MainActivity"
     }
+
 
     private var mService: Messenger? = null
     private var mMessenger: Messenger? = null
@@ -124,13 +125,24 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+//    private fun handleAction(msg: Message){
+//        try {
+//            Log.d(TAG, "handleAction: " + msg.obj.toString())
+//        }
+//        catch (e: Exception){
+//            e.printStackTrace()
+//        }
+//    }
+
+    //For Different Process
     private fun handleAction(msg: Message){
         try {
-            Log.d(TAG, "handleAction: " + msg.obj.toString())
+            val bundle = msg.data
+            bundle.classLoader = ModelData::class.java.classLoader
+            Log.d(TAG, "handleAction: " + bundle.getParcelableArrayList<ModelData>("data"))
         }
         catch (e: Exception){
             e.printStackTrace()
         }
-
     }
 }
