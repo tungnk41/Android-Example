@@ -33,12 +33,21 @@ class MainActivity : AppCompatActivity() {
 
         val edtFirst = dialog.findViewById<EditText>(R.id.edtFirst)
         val edtSecond = dialog.findViewById<EditText>(R.id.edtSecond)
-        val btnSubmit = dialog.findViewById<Button>(R.id.btnSubmmit)
+        val btnSubmit = dialog.findViewById<Button>(R.id.btnSubmit)
+
         val btnClose = dialog.findViewById<ImageView>(R.id.btnClose)
+        val btnNext = dialog.findViewById<Button>(R.id.btnNext)
 
         btnSubmit.setOnClickListener {
             Log.d("TAG", "showDialog: OnClicked " + edtFirst.toString() + " ," + edtSecond.toString())
             dialog.dismiss()
+        }
+        btnNext.setOnClickListener {
+            dialog.setContentView(R.layout.custom_next_dialog)
+            val btnSubmitNext = dialog.findViewById<Button>(R.id.btnSubmitNext)
+            btnSubmitNext?.setOnClickListener {
+                dialog.dismiss()
+            }
         }
         btnClose.setOnClickListener {
             dialog.dismiss()
