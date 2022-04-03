@@ -31,7 +31,7 @@ class EmotionView(context : Context, attrs : AttributeSet) : View(context,attrs)
         setupAttributes(attrs)
     }
 
-    fun setupAttributes(attrs : AttributeSet){
+    private fun setupAttributes(attrs : AttributeSet){
         val typedArray = context.theme.obtainStyledAttributes(attrs,R.styleable.EmotionView,0,0)
         colorBackground = typedArray.getColor(R.styleable.EmotionView_colorBackground,DEFAULT_BACKGROUND_COLOR)
         radius = typedArray.getDimension(R.styleable.EmotionView_radius, DEFAULT_RADIUS)
@@ -56,13 +56,13 @@ class EmotionView(context : Context, attrs : AttributeSet) : View(context,attrs)
         Log.d(TAG, "onDraw: ")
     }
 
-    fun initDraw(canvas: Canvas?){
+    private fun initDraw(canvas: Canvas?){
         drawBackground(canvas)
         drawEyes(canvas)
         drawMouth(canvas)
     }
 
-    fun drawBackground(canvas: Canvas?){
+    private fun drawBackground(canvas: Canvas?){
         paint.color = colorBackground
         paint.style = Paint.Style.FILL
 
@@ -73,7 +73,7 @@ class EmotionView(context : Context, attrs : AttributeSet) : View(context,attrs)
         canvas?.drawCircle(measuredWidth.toFloat()/2, measuredHeight.toFloat()/2,radius,paint)
     }
 
-    fun drawEyes(canvas: Canvas?){
+    private fun drawEyes(canvas: Canvas?){
         paint.color = colorEyes
         paint.style = Paint.Style.STROKE
         paint.strokeWidth = DEFAULT_BORDER_WIDTH
@@ -85,7 +85,7 @@ class EmotionView(context : Context, attrs : AttributeSet) : View(context,attrs)
         canvas?.drawOval(rightEyeRect, paint)
     }
 
-    fun drawMouth(canvas: Canvas?){
+    private fun drawMouth(canvas: Canvas?){
         paint.color = colorEyes
         paint.style = Paint.Style.STROKE
         paint.strokeWidth = DEFAULT_BORDER_WIDTH
@@ -100,7 +100,7 @@ class EmotionView(context : Context, attrs : AttributeSet) : View(context,attrs)
         canvas?.drawPath(mousePath,paint)
     }
 
-    fun drawPath(canvas: Canvas?){
+    private fun drawPath(canvas: Canvas?){
         mousePath.reset()
         mousePath.moveTo(prePoint.first,prePoint.second)
         mousePath.lineTo(prePoint.first + size * 0.1f,prePoint.second + size* 0.1f)
