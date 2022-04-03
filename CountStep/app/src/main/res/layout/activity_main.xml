@@ -7,47 +7,131 @@
     tools:context=".MainActivity">
 
     <TextView
+        android:id="@+id/tvLabelStep"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="56dp"
+        android:text="Step"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
         android:id="@+id/tvStep"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
         android:text="0"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.055" />
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="@+id/tvLabelStep"
+        app:layout_constraintHorizontal_bias="0.448"
+        app:layout_constraintStart_toStartOf="@+id/tvLabelStep"
+        app:layout_constraintTop_toBottomOf="@+id/tvLabelStep" />
+
+    <TextView
+        android:id="@+id/tvLabelActivity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:text="Activity"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="@+id/tvLabelStep"
+        app:layout_constraintStart_toEndOf="@+id/tvLabelStep"
+        app:layout_constraintTop_toTopOf="@+id/tvLabelStep"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <TextView
+        android:id="@+id/tvActivity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Still"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="@+id/tvLabelActivity"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/tvLabelActivity"
+        app:layout_constraintTop_toTopOf="@+id/tvStep" />
+
+
+    <TextView
+        android:id="@+id/tvLabelDistance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:text="Distance(m)"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="@+id/tvLabelActivity"
+        app:layout_constraintStart_toEndOf="@+id/tvLabelActivity"
+        app:layout_constraintTop_toTopOf="@+id/tvLabelActivity"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <TextView
+        android:id="@+id/tvDistance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="0"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="@+id/tvLabelDistance"
+        app:layout_constraintStart_toStartOf="@+id/tvLabelDistance"
+        app:layout_constraintTop_toTopOf="@+id/tvActivity" />
+
+    <TextView
+        android:id="@+id/tvLabelVelocity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:text="Velocity(m/s)"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="@+id/tvLabelDistance"
+        app:layout_constraintStart_toEndOf="@+id/tvLabelDistance"
+        app:layout_constraintTop_toTopOf="@+id/tvLabelDistance"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <TextView
+        android:id="@+id/tvVelocity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="0"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="@+id/tvLabelVelocity"
+        app:layout_constraintStart_toStartOf="@+id/tvLabelVelocity"
+        app:layout_constraintTop_toTopOf="@+id/tvDistance" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btnReset"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="592dp"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="188dp"
         android:text="Reset"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvStep" />
+
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btnStatTracking"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="84dp"
         android:text="Start Tracking"
+        app:layout_constraintBottom_toBottomOf="@+id/btnReset"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnReset" />
+        app:layout_constraintStart_toEndOf="@+id/btnReset"
+        app:layout_constraintTop_toTopOf="@+id/btnReset" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btnStopTracking"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="68dp"
+        android:layout_marginTop="24dp"
         android:text="Stop Tracking"
-        app:layout_constraintEnd_toEndOf="@+id/btnStatTracking"
-        app:layout_constraintHorizontal_bias="0.571"
         app:layout_constraintStart_toStartOf="@+id/btnStatTracking"
         app:layout_constraintTop_toBottomOf="@+id/btnStatTracking" />
 
