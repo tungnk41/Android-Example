@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">CountStep</string>
+    <string name="str_step"><u>Steps</u></string>
 </resources>

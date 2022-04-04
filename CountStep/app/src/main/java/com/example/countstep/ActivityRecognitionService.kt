@@ -36,8 +36,9 @@ class ActivityRecognitionService: Service() {
 
     companion object {
         private const val DETECTED_ACTIVITY_CHANNEL_ID: String = "detected_activity_channel_id"
-        private const val MIN_DISTANCE_CHANGE_FOR_UPDATES: Float = 5f // 5m
-        private const val MIN_TIME_BETWEEN_UPDATES: Long = (1000 * 10).toLong()// 10s
+        private const val MIN_DISTANCE_CHANGE_FOR_UPDATES_GPS: Float = 5f // 5m
+        private const val MIN_TIME_BETWEEN_UPDATES_GPS: Long = (1000 * 3).toLong()// 3s
+        private const val MIN_TIME_BETWEEN_UPDATES_STEP_SENSOR: Int = SensorManager.SENSOR_DELAY_NORMAL
     }
     private var serviceJob = SupervisorJob()
     private val serviceScope = CoroutineScope(Dispatchers.Main + serviceJob)
@@ -92,6 +93,7 @@ class ActivityRecognitionService: Service() {
             }
             else {
                 distance = 0.0
+                velocity = 0.0
             }
             sendDataToBroadcast(ACTION_DISTANCE_GPS_RECEIVER, distance)
             sendDataToBroadcast(ACTION_VELOCITY_GPS_RECEIVER, velocity)
@@ -156,7 +158,7 @@ class ActivityRecognitionService: Service() {
             ) {
                 return
             }
-            locationManager?.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_TIME_BETWEEN_UPDATES, MIN_DISTANCE_CHANGE_FOR_UPDATES, listener)
+            locationManager?.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_TIME_BETWEEN_UPDATES_GPS, MIN_DISTANCE_CHANGE_FOR_UPDATES_GPS, listener)
         }
     }
 
@@ -168,7 +170,7 @@ class ActivityRecognitionService: Service() {
             Toast.makeText(this, "Cannot find sensor", Toast.LENGTH_SHORT).show()
         }
         else {
-            sensorManager?.registerListener(sensorEventListener,stepSensor, SensorManager.SENSOR_DELAY_UI)
+            sensorManager?.registerListener(sensorEventListener,stepSensor, MIN_TIME_BETWEEN_UPDATES_STEP_SENSOR)
         }
     }
 
@@ -317,7 +319,8 @@ class ActivityRecognitionService: Service() {
 //        val c: Double = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a))
 //        val dist: Double = (R * c) * 1000 // km -> m
 
-        val dist = prevLocation.distanceTo(location).toDouble()
+        var dist = prevLocation.distanceTo(location).toDouble()
+        dist = if(dist > 30) 0.0 else dist
         return BigDecimal(dist).setScale(2, RoundingMode.CEILING).toDouble()
     }
 
