@@ -28,8 +28,10 @@ class MainActivity : AppCompatActivity() {
     private lateinit var btnStopTracking: Button
     private lateinit var tvStep: TextView
     private lateinit var tvActivity: TextView
-    private lateinit var tvDistance: TextView
-    private lateinit var tvVelocity: TextView
+    private lateinit var tvDistanceGps: TextView
+    private lateinit var tvDistanceSensor: TextView
+    private lateinit var tvVelocityGps: TextView
+    private lateinit var tvVelocitySensor: TextView
     private lateinit var broadcastReceiver: ActivityRecognitionReceiver
 
 
@@ -41,10 +43,12 @@ class MainActivity : AppCompatActivity() {
         btnStartTracking = findViewById(R.id.btnStatTracking)
         btnStopTracking = findViewById(R.id.btnStopTracking)
         tvActivity = findViewById(R.id.tvActivity)
-        tvDistance = findViewById(R.id.tvDistance)
-        tvVelocity = findViewById(R.id.tvVelocity)
-
+        tvDistanceGps = findViewById(R.id.tvDistanceGps)
+        tvDistanceSensor = findViewById(R.id.tvDistanceSensor)
+        tvVelocityGps = findViewById(R.id.tvVelocityGps)
+        tvVelocitySensor = findViewById(R.id.tvVelocitySensor)
         broadcastReceiver = ActivityRecognitionReceiver()
+
         broadcastReceiver.setIFaceUpdateUI(object : ActivityRecognitionReceiver.IFaceActivity{
             override fun onActivityTransitionChanged(activity: String, transition: String) {
                 tvActivity.text = activity
@@ -53,14 +57,21 @@ class MainActivity : AppCompatActivity() {
                 tvActivity.text = activity
             }
 
-            override fun onDistanceChanged(distance: String) {
-                tvDistance.text = distance
+            override fun onDistanceGpsChanged(distance: String) {
+                tvDistanceGps.text = distance
             }
 
-            override fun onVelocityChanged(velocity: String) {
-                tvVelocity.text = velocity
+            override fun onVelocityGpsChanged(velocity: String) {
+                tvVelocityGps.text = velocity
             }
 
+            override fun onDistanceSensorChanged(distance: String) {
+                tvDistanceSensor.text = distance
+            }
+
+            override fun onVelocitySensorChanged(velocity: String) {
+                tvVelocitySensor.text = velocity
+            }
             override fun onStepChanged(steps: String) {
                 tvStep.text = steps
             }
@@ -80,12 +91,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        registerReceiver(broadcastReceiver, IntentFilter().apply {
-            addAction(ACTION_ACTIVITY_TRANSITIONS_RECEIVER)
-            addAction(ACTION_ACTIVITY_RECEIVER)
-            addAction(ACTION_DISTANCE_RECEIVER)
-            addAction(ACTION_STEPS_RECEIVER)
-        })
+        registerReceiver(broadcastReceiver,ActivityRecognitionReceiver.getFilterAction())
     }
 
     override fun onStop() {

@@ -58,11 +58,11 @@
 
 
     <TextView
-        android:id="@+id/tvLabelDistance"
+        android:id="@+id/tvLabelDistanceGps"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:text="Distance(m)"
+        android:text="m (GPS)"
         android:textColor="@color/black"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="@+id/tvLabelActivity"
@@ -71,39 +71,86 @@
         app:layout_constraintVertical_bias="0.0" />
 
     <TextView
-        android:id="@+id/tvDistance"
+        android:id="@+id/tvDistanceGps"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="0"
         android:textColor="@color/black"
         android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="@+id/tvLabelDistance"
-        app:layout_constraintStart_toStartOf="@+id/tvLabelDistance"
+        app:layout_constraintEnd_toEndOf="@+id/tvLabelDistanceGps"
+        app:layout_constraintStart_toStartOf="@+id/tvLabelDistanceGps"
         app:layout_constraintTop_toTopOf="@+id/tvActivity" />
 
     <TextView
-        android:id="@+id/tvLabelVelocity"
+        android:id="@+id/tvLabelVelocityGps"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:text="Velocity(m/s)"
+        android:text="m/s ()GPS"
         android:textColor="@color/black"
         android:textSize="18sp"
-        app:layout_constraintBottom_toBottomOf="@+id/tvLabelDistance"
-        app:layout_constraintStart_toEndOf="@+id/tvLabelDistance"
-        app:layout_constraintTop_toTopOf="@+id/tvLabelDistance"
+        app:layout_constraintBottom_toBottomOf="@+id/tvLabelDistanceGps"
+        app:layout_constraintStart_toEndOf="@+id/tvLabelDistanceGps"
+        app:layout_constraintTop_toTopOf="@+id/tvLabelDistanceGps"
         app:layout_constraintVertical_bias="0.0" />
 
     <TextView
-        android:id="@+id/tvVelocity"
+        android:id="@+id/tvVelocityGps"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="0"
         android:textColor="@color/black"
         android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="@+id/tvLabelVelocity"
-        app:layout_constraintStart_toStartOf="@+id/tvLabelVelocity"
-        app:layout_constraintTop_toTopOf="@+id/tvDistance" />
+        app:layout_constraintEnd_toEndOf="@+id/tvLabelVelocityGps"
+        app:layout_constraintStart_toStartOf="@+id/tvLabelVelocityGps"
+        app:layout_constraintTop_toTopOf="@+id/tvDistanceGps" />
+
+    <TextView
+        android:id="@+id/tvLabelDistanceSensor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="36dp"
+        android:text="m (Sensor)"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="@+id/tvLabelStep"
+        app:layout_constraintTop_toBottomOf="@+id/tvStep" />
+
+    <TextView
+        android:id="@+id/tvDistanceSensor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="28dp"
+        android:text="0"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="@+id/tvLabelDistanceSensor"
+        app:layout_constraintHorizontal_bias="0.461"
+        app:layout_constraintStart_toStartOf="@+id/tvLabelDistanceSensor"
+        app:layout_constraintTop_toBottomOf="@+id/tvLabelDistanceSensor" />
+
+    <TextView
+        android:id="@+id/tvLabelVelocitySensor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="28dp"
+        android:text="m/s (Sensor)"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="@+id/tvLabelDistanceSensor"
+        app:layout_constraintStart_toEndOf="@+id/tvLabelDistanceSensor"
+        app:layout_constraintTop_toTopOf="@+id/tvLabelDistanceSensor" />
+
+    <TextView
+        android:id="@+id/tvVelocitySensor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="0"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="@+id/tvLabelVelocitySensor"
+        app:layout_constraintStart_toStartOf="@+id/tvLabelVelocitySensor"
+        app:layout_constraintTop_toTopOf="@+id/tvDistanceSensor" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btnReset"

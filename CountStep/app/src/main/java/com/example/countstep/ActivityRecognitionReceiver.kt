@@ -4,6 +4,7 @@ import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.util.Log
 import com.google.android.gms.location.ActivityRecognitionResult
 import com.google.android.gms.location.ActivityTransition
@@ -12,17 +13,21 @@ import com.google.android.gms.location.DetectedActivity
 
 const val ACTION_ACTIVITY_TRANSITIONS_RECEIVER = "ACTION_ACTIVITY_TRANSITIONS_RECEIVER"
 const val ACTION_ACTIVITY_RECEIVER = "ACTION_ACTIVITY_RECEIVER"
-const val ACTION_DISTANCE_RECEIVER = "ACTION_DISTANCE_RECEIVER"
 const val ACTION_STEPS_RECEIVER = "ACTION_STEPS_RECEIVER"
-const val ACTION_VELOCITY_RECEIVER = "ACTION_VELOCITY_RECEIVER"
+const val ACTION_DISTANCE_GPS_RECEIVER = "ACTION_DISTANCE_GPS_RECEIVER"
+const val ACTION_VELOCITY_GPS_RECEIVER = "ACTION_VELOCITY_GPS_RECEIVER"
+const val ACTION_DISTANCE_SENSOR_RECEIVER = "ACTION_DISTANCE_SENSOR_RECEIVER"
+const val ACTION_VELOCITY_SENSOR_RECEIVER = "ACTION_VELOCITY_SENSOR_RECEIVER"
 
 class ActivityRecognitionReceiver : BroadcastReceiver() {
 
     interface IFaceActivity {
         fun onActivityTransitionChanged(activity: String,transition: String)
         fun onActivityChanged(activity: String)
-        fun onDistanceChanged(distance: String)
-        fun onVelocityChanged(distance: String)
+        fun onDistanceGpsChanged(distance: String)
+        fun onVelocityGpsChanged(velocity: String)
+        fun onDistanceSensorChanged(distance: String)
+        fun onVelocitySensorChanged(velocity: String)
         fun onStepChanged(step: String)
     }
 
@@ -34,6 +39,17 @@ class ActivityRecognitionReceiver : BroadcastReceiver() {
         fun getPendingIntentActivity(context: Context): PendingIntent {
             val intent = Intent(ACTION_ACTIVITY_RECEIVER)
             return PendingIntent.getBroadcast(context, 1, intent, PendingIntent.FLAG_MUTABLE)
+        }
+        fun getFilterAction(): IntentFilter {
+            return IntentFilter().apply {
+                addAction(ACTION_ACTIVITY_TRANSITIONS_RECEIVER)
+                addAction(ACTION_ACTIVITY_RECEIVER)
+                addAction(ACTION_DISTANCE_GPS_RECEIVER)
+                addAction(ACTION_VELOCITY_GPS_RECEIVER)
+                addAction(ACTION_DISTANCE_SENSOR_RECEIVER)
+                addAction(ACTION_VELOCITY_SENSOR_RECEIVER)
+                addAction(ACTION_STEPS_RECEIVER)
+            }
         }
     }
 
@@ -84,13 +100,23 @@ class ActivityRecognitionReceiver : BroadcastReceiver() {
                     val steps = intent.getStringExtra("ACTION_STEPS_RECEIVER") ?: "0"
                     iFaceActivity?.onStepChanged(steps)
                 }
-                ACTION_DISTANCE_RECEIVER -> {
-                    val distance = intent.getStringExtra("ACTION_DISTANCE_RECEIVER") ?: "0"
-                    iFaceActivity?.onDistanceChanged(distance)
+                ACTION_DISTANCE_GPS_RECEIVER -> {
+                    val distance = intent.getStringExtra("ACTION_DISTANCE_GPS_RECEIVER") ?: "0"
+                    iFaceActivity?.onDistanceGpsChanged(distance)
                 }
-                ACTION_VELOCITY_RECEIVER -> {
-                    val velocity = intent.getStringExtra("ACTION_VELOCITY_RECEIVER") ?: "0"
-                    iFaceActivity?.onVelocityChanged(velocity)
+                ACTION_VELOCITY_GPS_RECEIVER -> {
+                    val velocity = intent.getStringExtra("ACTION_VELOCITY_GPS_RECEIVER") ?: "0"
+                    iFaceActivity?.onVelocityGpsChanged(velocity)
+                }
+                ACTION_DISTANCE_SENSOR_RECEIVER -> {
+                    Log.d("TAG", "onReceive: ACTION_DISTANCE_SENSOR_RECEIVER")
+                    val distance = intent.getStringExtra("ACTION_DISTANCE_SENSOR_RECEIVER") ?: "0"
+                    iFaceActivity?.onDistanceSensorChanged(distance)
+                }
+                ACTION_VELOCITY_SENSOR_RECEIVER -> {
+                    Log.d("TAG", "onReceive: ACTION_VELOCITY_SENSOR_RECEIVER")
+                    val velocity = intent.getStringExtra("ACTION_VELOCITY_SENSOR_RECEIVER") ?: "0"
+                    iFaceActivity?.onVelocitySensorChanged(velocity)
                 }
                 else -> {
                     Log.d("TAG", "onReceive: ACTION UNKNOWN ")

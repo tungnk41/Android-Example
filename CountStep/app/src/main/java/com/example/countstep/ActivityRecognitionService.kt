@@ -4,6 +4,7 @@ import android.Manifest
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.Service
+import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -22,11 +23,8 @@ import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import com.google.android.gms.location.*
 import kotlinx.coroutines.*
-import java.lang.Math.round
 import java.math.BigDecimal
 import java.math.RoundingMode
-import java.security.Timestamp
-import java.text.DecimalFormat
 
 
 const val ACTION_START_TRACKING_SERVICE = "ACTION_START_TRACKING_SERVICE"
@@ -47,43 +45,54 @@ class ActivityRecognitionService: Service() {
     private var stateActivity: Int = DetectedActivity.UNKNOWN
     private val transitions = mutableListOf<ActivityTransition>()
     private var sensorManager: SensorManager? = null
-    private var steps = 0
+    private var initSteps = 0
     private var prevSteps = 0
+    private var steps = 0
     private var location: Pair<Location,Long>? = null
     private var prevLocation: Pair<Location,Long>? = null
     private var distance: Double = 0.0 // m
     private var prevDistance: Double = 0.0 // m
     private var velocity: Double = 0.0 // m/s
     private var locationManager: LocationManager? = null
+
+    private var prevSensorTimestamp: Long = 0
+    private var currentSensorTimestamp: Long = 0
+
     private val sensorEventListener = object : SensorEventListener {
         override fun onSensorChanged(event: SensorEvent?) {
             event?.let {
-                if(prevSteps == 0) {
-                    prevSteps = event.values[0].toInt()
+                if(initSteps == 0) {
+                    initSteps = event.values[0].toInt()
                 }
-                steps = event.values[0].toInt()
-                sendDataToBroadcast(ACTION_STEPS_RECEIVER, steps - prevSteps)
+
+                prevSteps = steps
+                steps = event.values[0].toInt() - initSteps
+                prevSensorTimestamp = currentSensorTimestamp
+                currentSensorTimestamp = System.currentTimeMillis()
+                sendDataToBroadcast(ACTION_STEPS_RECEIVER, steps)
+                sendDataToBroadcast(ACTION_DISTANCE_SENSOR_RECEIVER, calculateDistanceSensor(steps))
+                sendDataToBroadcast(ACTION_VELOCITY_SENSOR_RECEIVER, calculateVelocitySensor(prevSteps,steps))
+                Log.d(TAG, "onSensorChanged: " + steps)
             }
         }
-        override fun onAccuracyChanged(p0: Sensor?, p1: Int) {
-
+        override fun onAccuracyChanged(sensor: Sensor?, p1: Int) {
+            Log.d(TAG, "onAccuracyChanged: " + p1)
         }
     }
     private val listener = LocationListener { newLocation ->
         prevLocation = location
         location = Pair(newLocation,System.currentTimeMillis())
 
-        Log.d("TAG", "LocationListener : " + newLocation.latitude + " ," + newLocation.longitude)
         if(location != null && prevLocation != null) {
             prevDistance = distance
-            distance = calculateDistance(prevLocation!!.first,location!!.first)
-            velocity = calculateVelocity(prevDistance,prevLocation!!.second,distance, location!!.second)
+            distance = calculateDistanceGps(prevLocation!!.first,location!!.first)
+            velocity = calculateVelocityGps(prevDistance,prevLocation!!.second,distance, location!!.second)
         }
         else {
             distance = 0.0
         }
-        sendDataToBroadcast(ACTION_DISTANCE_RECEIVER, distance)
-        sendDataToBroadcast(ACTION_VELOCITY_RECEIVER, velocity)
+        sendDataToBroadcast(ACTION_DISTANCE_GPS_RECEIVER, distance)
+        sendDataToBroadcast(ACTION_VELOCITY_GPS_RECEIVER, velocity)
     }
 
     override fun onCreate() {
@@ -243,8 +252,13 @@ class ActivityRecognitionService: Service() {
     }
 
     private fun setStateActivity(state: Int) {
-        Log.d("TAG", "setStateActivity: " + state)
         stateActivity = state
+        when(state) {
+            DetectedActivity.STILL, DetectedActivity.UNKNOWN -> {
+                sendDataToBroadcast(ACTION_VELOCITY_GPS_RECEIVER,0)
+                sendDataToBroadcast(ACTION_VELOCITY_SENSOR_RECEIVER,0)
+            }
+        }
     }
 
     private fun startForegroundService() {
@@ -278,35 +292,61 @@ class ActivityRecognitionService: Service() {
             ACTION_STEPS_RECEIVER -> {
                 sendBroadcast(Intent(ACTION_STEPS_RECEIVER).apply { putExtra("ACTION_STEPS_RECEIVER",data.toString()) })
             }
-            ACTION_DISTANCE_RECEIVER -> {
-                if(stateActivity == DetectedActivity.WALKING || stateActivity == DetectedActivity.RUNNING){
-                    sendBroadcast(Intent(ACTION_DISTANCE_RECEIVER).apply { putExtra("ACTION_DISTANCE_RECEIVER",data.toString()) })
+            ACTION_DISTANCE_GPS_RECEIVER -> {
+                if(stateActivity == DetectedActivity.WALKING || stateActivity == DetectedActivity.RUNNING || stateActivity == DetectedActivity.STILL){
+                    sendBroadcast(Intent(ACTION_DISTANCE_GPS_RECEIVER).apply { putExtra("ACTION_DISTANCE_GPS_RECEIVER",data.toString()) })
                 }
             }
-            ACTION_VELOCITY_RECEIVER -> {
-                if(stateActivity == DetectedActivity.WALKING || stateActivity == DetectedActivity.RUNNING){
-                    sendBroadcast(Intent(ACTION_VELOCITY_RECEIVER).apply { putExtra("ACTION_VELOCITY_RECEIVER",data.toString()) })
+            ACTION_VELOCITY_GPS_RECEIVER -> {
+                if(stateActivity == DetectedActivity.WALKING || stateActivity == DetectedActivity.RUNNING || stateActivity == DetectedActivity.STILL){
+                    sendBroadcast(Intent(ACTION_VELOCITY_GPS_RECEIVER).apply { putExtra("ACTION_VELOCITY_GPS_RECEIVER",data.toString()) })
+                }
+            }
+            ACTION_DISTANCE_SENSOR_RECEIVER -> {
+                if(stateActivity == DetectedActivity.WALKING || stateActivity == DetectedActivity.RUNNING || stateActivity == DetectedActivity.STILL){
+                    sendBroadcast(Intent(ACTION_DISTANCE_SENSOR_RECEIVER).apply { putExtra("ACTION_DISTANCE_SENSOR_RECEIVER",data.toString()) })
+                }
+
+            }
+            ACTION_VELOCITY_SENSOR_RECEIVER -> {
+                if(stateActivity == DetectedActivity.WALKING || stateActivity == DetectedActivity.RUNNING || stateActivity == DetectedActivity.STILL){
+                    sendBroadcast(Intent(ACTION_VELOCITY_SENSOR_RECEIVER).apply { putExtra("ACTION_VELOCITY_SENSOR_RECEIVER",data.toString()) })
                 }
             }
         }
     }
 
-    private fun calculateDistance(prevLocation: Location, location: Location ): Double {
+    private fun calculateDistanceGps(prevLocation: Location, location: Location ): Double {
         //Using Haversine formula
-        val R: Double = 6371.0 // Radius of Earth in Km
-        val dlat = Math.toRadians(location.latitude - prevLocation.latitude)
-        val dlon = Math.toRadians(location.longitude - prevLocation.longitude)
-        val a: Double = Math.pow(Math.sin(dlat/2),2.0) + Math.cos(Math.toRadians(prevLocation.latitude))* Math.cos(Math.toRadians(location.latitude)) * Math.pow(Math.sin(dlon/2),2.0)
-        val c: Double = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a))
-        val d: Double = (R * c) * 1000 // km -> m
+//        val R: Double = 6371.0 // Radius of Earth in Km
+//        val dlat = Math.toRadians(location.latitude - prevLocation.latitude)
+//        val dlon = Math.toRadians(location.longitude - prevLocation.longitude)
+//        val a: Double = Math.pow(Math.sin(dlat/2),2.0) + Math.cos(Math.toRadians(prevLocation.latitude))* Math.cos(Math.toRadians(location.latitude)) * Math.pow(Math.sin(dlon/2),2.0)
+//        val c: Double = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a))
+//        val dist: Double = (R * c) * 1000 // km -> m
 
-        return BigDecimal(d).setScale(2, RoundingMode.CEILING).toDouble()
+        val dist = prevLocation.distanceTo(location).toDouble()
+        return BigDecimal(dist).setScale(2, RoundingMode.CEILING).toDouble()
     }
 
-    private fun calculateVelocity(prevDistance: Double, prevTime: Long, distance: Double, time: Long) : Double {
+    private fun calculateVelocityGps(prevDistance: Double, prevTime: Long, distance: Double, time: Long) : Double {
         val timeInSecond = ((time - prevTime)/1000)
         val velocity = (((distance - prevDistance)/timeInSecond))
         return BigDecimal(velocity).setScale(1, RoundingMode.CEILING).toDouble()
+    }
+
+    private fun calculateDistanceSensor(steps: Int) : Double {
+        val stride = 0.425 // 1m70 / 4
+        val dist = steps * stride
+        return BigDecimal(dist).setScale(1, RoundingMode.CEILING).toDouble()
+    }
+
+    private fun calculateVelocitySensor(prevSteps : Int,steps: Int) : Double {
+        val dTime = (currentSensorTimestamp - prevSensorTimestamp) / 1000
+        if(dTime < 1) return  0.0
+
+        val v = ((steps - prevSteps) * 0.425) / dTime
+        return BigDecimal(v).setScale(1, RoundingMode.CEILING).toDouble()
     }
 
 }
