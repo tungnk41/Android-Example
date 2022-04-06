@@ -81,7 +81,7 @@ class ActivityRecognitionReceiver : BroadcastReceiver() {
                                 it.type == DetectedActivity.RUNNING
                             }
                             .filter {
-                                it.confidence >= 70
+                                it.confidence >= 75
                             }
                             .run {
                                 if(isNotEmpty()) {

@@ -51,9 +51,11 @@ class ActivityRecognitionService: Service() {
     private var steps = 0
     private var location: Pair<Location,Long>? = null
     private var prevLocation: Pair<Location,Long>? = null
-    private var distance: Double = 0.0 // m
-    private var prevDistance: Double = 0.0 // m
-    private var velocity: Double = 0.0 // m/s
+    private var distanceGps: Double = 0.0 // m
+    private var prevDistanceGps: Double = 0.0 // m
+    private var velocityGps: Double = 0.0 // m/s
+    private var distanceSensor: Double = 0.0 // m/s
+    private var velocitySensor: Double = 0.0 // m/s
     private var locationManager: LocationManager? = null
 
     private var prevSensorTimestamp: Long = 0
@@ -72,8 +74,10 @@ class ActivityRecognitionService: Service() {
 
                     prevSensorTimestamp = currentSensorTimestamp
                     currentSensorTimestamp = System.currentTimeMillis()
-                    sendDataToBroadcast(ACTION_DISTANCE_SENSOR_RECEIVER, calculateDistanceSensor(steps))
-                    sendDataToBroadcast(ACTION_VELOCITY_SENSOR_RECEIVER, calculateVelocitySensor(prevSteps,steps))
+                    distanceSensor = calculateDistanceSensor(steps)
+                    velocitySensor = calculateVelocitySensor(prevSteps,steps)
+                    sendDataToBroadcast(ACTION_DISTANCE_SENSOR_RECEIVER,distanceSensor )
+                    sendDataToBroadcast(ACTION_VELOCITY_SENSOR_RECEIVER, velocitySensor)
                     Log.d(TAG, "onSensorChanged: " + steps)
                 }
         }
@@ -87,16 +91,16 @@ class ActivityRecognitionService: Service() {
             location = Pair(newLocation,System.currentTimeMillis())
 
             if(location != null && prevLocation != null) {
-                prevDistance = distance
-                distance += calculateDistanceGps(prevLocation!!.first,location!!.first)
-                velocity = calculateVelocityGps(prevDistance,prevLocation!!.second,distance, location!!.second)
+                prevDistanceGps = distanceGps
+                distanceGps += calculateDistanceGps(prevLocation!!.first,location!!.first)
+                velocityGps = calculateVelocityGps(prevDistanceGps,prevLocation!!.second,distanceGps, location!!.second)
             }
             else {
-                distance = 0.0
-                velocity = 0.0
+                distanceGps = 0.0
+                velocityGps = 0.0
             }
-            sendDataToBroadcast(ACTION_DISTANCE_GPS_RECEIVER, distance)
-            sendDataToBroadcast(ACTION_VELOCITY_GPS_RECEIVER, velocity)
+            sendDataToBroadcast(ACTION_DISTANCE_GPS_RECEIVER, distanceGps)
+            sendDataToBroadcast(ACTION_VELOCITY_GPS_RECEIVER, velocityGps)
         }
     }
 
@@ -252,8 +256,16 @@ class ActivityRecognitionService: Service() {
     }
 
     private fun resetDataTracking() {
-        prevSteps = steps
+        initSteps = 0
+        location= null
+        prevLocation = null
+        prevSensorTimestamp = 0
+        currentSensorTimestamp = 0
         sendDataToBroadcast(ACTION_STEPS_RECEIVER,0)
+        sendDataToBroadcast(ACTION_DISTANCE_GPS_RECEIVER,0)
+        sendDataToBroadcast(ACTION_DISTANCE_SENSOR_RECEIVER,0)
+        sendDataToBroadcast(ACTION_VELOCITY_GPS_RECEIVER,0)
+        sendDataToBroadcast(ACTION_VELOCITY_SENSOR_RECEIVER,0)
     }
 
     private fun setStateActivity(state: Int) {
@@ -311,14 +323,6 @@ class ActivityRecognitionService: Service() {
     }
 
     private fun calculateDistanceGps(prevLocation: Location, location: Location ): Double {
-        //Using Haversine formula
-//        val R: Double = 6371.0 // Radius of Earth in Km
-//        val dlat = Math.toRadians(location.latitude - prevLocation.latitude)
-//        val dlon = Math.toRadians(location.longitude - prevLocation.longitude)
-//        val a: Double = Math.pow(Math.sin(dlat/2),2.0) + Math.cos(Math.toRadians(prevLocation.latitude))* Math.cos(Math.toRadians(location.latitude)) * Math.pow(Math.sin(dlon/2),2.0)
-//        val c: Double = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a))
-//        val dist: Double = (R * c) * 1000 // km -> m
-
         var dist = prevLocation.distanceTo(location).toDouble()
         dist = if(dist > 30) 0.0 else dist
         return BigDecimal(dist).setScale(2, RoundingMode.CEILING).toDouble()
