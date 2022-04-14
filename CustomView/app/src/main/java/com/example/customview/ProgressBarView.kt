@@ -52,6 +52,7 @@ class ProgressBarView(context : Context, attrs : AttributeSet) : View(context,at
         paint.color = colorBackground
 //        setGradientPaintColor()
         canvas?.drawRoundRect(RectF(0F,0F,measuredWidth.toFloat(),measuredHeight.toFloat()),radius,radius, paint)
+//        paint.shader = null
         paint.color = color
         var widthPercent = 0F
         if(value <= 0) widthPercent = 0F
@@ -75,9 +76,11 @@ class ProgressBarView(context : Context, attrs : AttributeSet) : View(context,at
     private fun setGradientPaintColor() {
         val colors = intArrayOf(
             ContextCompat.getColor(context, R.color.purple_500),
+            ContextCompat.getColor(context, R.color.teal_700),
             ContextCompat.getColor(context, R.color.white),
         )
-        paint.shader = LinearGradient(0f,0f,measuredWidth.toFloat(),measuredHeight.toFloat(),colors,null,Shader.TileMode.CLAMP)
+        paint.shader = LinearGradient(0f,0f,measuredWidth.toFloat(),0F,colors,null,Shader.TileMode.CLAMP)
+//        paint.shader = LinearGradient(0f,0f,measuredWidth.toFloat(),measuredHeight.toFloat(),colors,null,Shader.TileMode.CLAMP)
     }
 
     fun setValue(v: Int) {
