@@ -3,7 +3,12 @@
     <declare-styleable name="EmotionView">
         <attr name="colorBackground" format="color"/>
         <attr name="radius" format="dimension"/>
-
+    </declare-styleable>
+    <declare-styleable name="ProgressBarView">
+        <attr name="pbColorBackground" format="color"/>
+        <attr name="pbColor" format="color"/>
+        <attr name="pbRadius" format="dimension"/>
+        <attr name="pbValue" format="integer"/>
     </declare-styleable>
 
 </resources>
