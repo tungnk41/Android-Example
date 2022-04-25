@@ -38,7 +38,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun handleStartAnimation(){
-
+        //Value: From ... to ...to...
         val animatorX = ObjectAnimator.ofFloat(imgImage,View.X,imgImage.x + 200)
         animatorX.setDuration(1000)
         val animatorY = ObjectAnimator.ofFloat(imgImage,View.Y,imgImage.y + 200)
@@ -47,10 +47,29 @@ class MainActivity : AppCompatActivity() {
         animatorAlpha.setDuration(1000)
         val animatorRotate = ObjectAnimator.ofFloat(imgImage, View.ROTATION,0f,360f)
         animatorRotate.setDuration(1000)
+        val animatorScaleX = ObjectAnimator.ofFloat(imgImage, View.SCALE_X,1f,0.5f,0f)
+        animatorScaleX.setDuration(1000)
+        val animatorScaleY = ObjectAnimator.ofFloat(imgImage, View.SCALE_Y,1f,0.5f,0f)
+        animatorScaleY.setDuration(1000)
 
 
         val animatorSet = AnimatorSet()
-        animatorSet.playTogether(animatorX,animatorY,animatorAlpha,animatorRotate)
+//        animatorSet.playTogether(animatorX,animatorY,animatorAlpha,animatorRotate)
+        animatorSet.playTogether(animatorScaleX,animatorScaleY)
+        animatorSet.addListener(object : Animator.AnimatorListener{
+            override fun onAnimationStart(animation: Animator?) {
+            }
+
+            override fun onAnimationEnd(animation: Animator?) {
+            }
+
+            override fun onAnimationCancel(animation: Animator?) {
+            }
+
+            override fun onAnimationRepeat(animation: Animator?) {
+            }
+
+        })
         animatorSet.start()
     }
 
