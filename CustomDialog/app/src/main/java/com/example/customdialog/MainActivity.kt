@@ -1,18 +1,22 @@
 package com.example.customdialog
 
 import android.app.ActionBar
+import android.app.AlertDialog
 import android.app.Dialog
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.ViewGroup
 import android.view.Window
 import android.view.WindowManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 
 class MainActivity : AppCompatActivity() {
     private lateinit var btnShowDialog: Button
+    private lateinit var alertDialog: Dialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -20,7 +24,8 @@ class MainActivity : AppCompatActivity() {
 
         btnShowDialog = findViewById(R.id.btnShowDialog)
         btnShowDialog.setOnClickListener {
-            showDialog()
+//            showDialog()
+            showAlertDialog()
         }
     }
 
@@ -55,5 +60,20 @@ class MainActivity : AppCompatActivity() {
         }
 
         dialog.show()
+    }
+
+    private fun showAlertDialog() {
+        alertDialog = Dialog(this)
+        alertDialog.window?.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
+        alertDialog.setContentView(R.layout.alert_dialog_view)
+        val displayMetrics = resources.displayMetrics
+        val screenWidthPx = displayMetrics.widthPixels
+        val screenHeightPx = displayMetrics.heightPixels
+        alertDialog.window?.setLayout( (screenWidthPx * 0.8).toInt(), ConstraintLayout.LayoutParams.WRAP_CONTENT)
+//        val layoutInflater = layoutInflater
+//        val view = layoutInflater.inflate(R.layout.alert_dialog_view, null)
+//        alertDialog.setView(view)
+//        alertDialog.setMessage("ABCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCccc")
+        alertDialog.show()
     }
 }

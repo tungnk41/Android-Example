@@ -3,7 +3,9 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="app/src/main/res/drawable/bg_dialog.xml" value="0.1375" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.5333333333333333" />
+        <entry key="app/src/main/res/layout/alert_dialog_view.xml" value="0.25" />
         <entry key="app/src/main/res/layout/custom_dialog.xml" value="0.5489583333333333" />
         <entry key="app/src/main/res/layout/custom_next_dialog.xml" value="0.30625" />
       </map>
