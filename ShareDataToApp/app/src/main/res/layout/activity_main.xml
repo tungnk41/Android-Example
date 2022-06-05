@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:paddingHorizontal="20dp"
+    tools:context=".MainActivity">
+
+    <Button
+        android:id="@+id/btnDownloadImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Download Image"/>
+
+    <Button
+        android:id="@+id/btnShareFacebook"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Share Facebook"/>
+
+    <Button
+        android:id="@+id/btnShareInstagram"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Share Instagram"/>
+
+    <Button
+        android:id="@+id/btnShareTwitter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Share Twitter"/>
+
+    <Button
+        android:id="@+id/btnShareTelegram"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Share Telegram"/>
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/imgScreenshot"
+        android:layout_width="match_parent"
+        android:layout_height="450dp"
+        android:layout_marginTop="10dp"/>
+
+</LinearLayout>
