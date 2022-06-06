@@ -180,6 +180,7 @@ class MainActivity : AppCompatActivity() {
         intent.putExtra(Intent.EXTRA_STREAM, imageUri)
         intent.putExtra(Intent.EXTRA_TEXT, "Test ABC")
         intent.`package` = packageName
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
         return intent
     }
 
