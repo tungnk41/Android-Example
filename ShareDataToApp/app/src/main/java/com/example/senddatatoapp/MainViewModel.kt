@@ -25,10 +25,11 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     var imageUri : Uri? = null
 
-    fun saveImage(bitmap: Bitmap) {
+    fun saveImage(bitmap: Bitmap, onCompleted: ((uri: Uri?) -> Unit)? = null) {
         viewModelScope.launch(Dispatchers.IO) {
             imageUri = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) saveImageInQ(bitmap)
             else saveTheImageLegacyStyle(bitmap)
+            onCompleted?.invoke(imageUri)
         }
     }
 

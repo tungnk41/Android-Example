@@ -61,24 +61,24 @@ class MainActivity : AppCompatActivity() {
             shareFacebook()
         }
         btnShareInstagram.setOnClickListener {
-//            if(!isPackageInstalled(PACKAGE_INSTAGRAM,packageManager)){
-//                Toast.makeText(this,"App is not installed", Toast.LENGTH_SHORT).show()
-//                return@setOnClickListener
-//            }
+            if(!isPackageInstalled(PACKAGE_INSTAGRAM,packageManager)){
+                Toast.makeText(this,"App is not installed", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
             shareInstagram()
         }
         btnShareTwitter.setOnClickListener {
-//            if(!isPackageInstalled(PACKAGE_TWITTER,packageManager)){
-//                Toast.makeText(this,"App is not installed", Toast.LENGTH_SHORT).show()
-//                return@setOnClickListener
-//            }
+            if(!isPackageInstalled(PACKAGE_TWITTER,packageManager)){
+                Toast.makeText(this,"App is not installed", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
             shareTwitter()
         }
         btnShareTelegram.setOnClickListener {
-//            if(!isPackageInstalled(PACKAGE_TELEGRAM,packageManager)){
-//                Toast.makeText(this,"App is not installed", Toast.LENGTH_SHORT).show()
-//                return@setOnClickListener
-//            }
+            if(!isPackageInstalled(PACKAGE_TELEGRAM,packageManager)){
+                Toast.makeText(this,"App is not installed", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
             shareTelegram()
         }
     }
@@ -113,61 +113,74 @@ class MainActivity : AppCompatActivity() {
 
     private fun shareInstagram() {
         val bitmapUri = viewModel.imageUri
-        bitmapUri?.let {
-            val intent = Intent(Intent.ACTION_SEND)
-            intent.type = "*/*"
-            intent.putExtra(Intent.EXTRA_STREAM, it)
-            intent.putExtra(Intent.EXTRA_TEXT, "Test ABC")
-            startActivity(Intent.createChooser(intent,"Share Instagram"))
+        if(bitmapUri == null){
+            viewModel.saveImage(takeScreenshotForScreen(this), onCompleted = { uri ->
+                uri?.let {
+                    startActivity(Intent.createChooser(getIntentShareImage(it, PACKAGE_INSTAGRAM),"Share Instagram"))
+                }
+            })
+        }
+        else {
+            startActivity(Intent.createChooser(getIntentShareImage(bitmapUri, PACKAGE_INSTAGRAM),"Share Instagram"))
         }
     }
 
     private fun shareTwitter() {
         val bitmapUri = viewModel.imageUri
-        bitmapUri?.let {
-            val intent = Intent(Intent.ACTION_SEND)
-            intent.type = "*/*"
-            intent.putExtra(Intent.EXTRA_STREAM, it)
-            intent.putExtra(Intent.EXTRA_TEXT, "Test ABC")
-            val packageManager = packageManager
-            val activities = packageManager.queryIntentActivities(intent, 0)
-            val isIntentSafe = activities.size > 0
-
-            if (isIntentSafe) {
-                startActivity(Intent.createChooser(intent,"Share Twitter"))
-            }
+        if(bitmapUri == null){
+            viewModel.saveImage(takeScreenshotForScreen(this), onCompleted = { uri ->
+                uri?.let {
+                    startActivity(Intent.createChooser(getIntentShareImage(it, PACKAGE_TWITTER),"Share Twitter"))
+                }
+            })
+        }
+        else {
+            startActivity(Intent.createChooser(getIntentShareImage(bitmapUri, PACKAGE_TWITTER),"Share Twitter"))
         }
     }
 
     private fun shareTelegram() {
         val bitmapUri = viewModel.imageUri
-        bitmapUri?.let {
-            val intent = Intent(Intent.ACTION_SEND)
-            intent.type = "*/*"
-            intent.putExtra(Intent.EXTRA_STREAM, it)
-            intent.putExtra(Intent.EXTRA_TEXT, "Test ABC")
-            startActivity(Intent.createChooser(intent,"Share Telegram"))
+        if(bitmapUri == null){
+            viewModel.saveImage(takeScreenshotForScreen(this), onCompleted = { uri ->
+                uri?.let {
+                    startActivity(Intent.createChooser(getIntentShareImage(it, PACKAGE_TELEGRAM),"Share Telegram"))
+                }
+            })
+        }
+        else {
+            startActivity(Intent.createChooser(getIntentShareImage(bitmapUri, PACKAGE_TELEGRAM),"Share Telegram"))
         }
     }
 
-    private fun takeScreenshotForView(view: View): Bitmap? {
+    private fun takeScreenshotForView(view: View): Bitmap {
         val bitmap = Bitmap.createBitmap(view.width, view.height, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(bitmap)
         view.draw(canvas)
         return bitmap
     }
 
-    private fun takeScreenshotForScreen(activity: Activity): Bitmap? {
+    private fun takeScreenshotForScreen(activity: Activity): Bitmap {
         return takeScreenshotForView(activity.window.decorView.rootView)
     }
 
     private fun isPackageInstalled(packageName: String, packageManager: PackageManager): Boolean {
         try {
-            packageManager.getPackageInfo(packageName, 0)
-            return true
+            packageManager.getPackageInfo(packageName, PackageManager.GET_ACTIVITIES)
+            return packageManager.getApplicationInfo(packageName,0).enabled
         } catch (e: PackageManager.NameNotFoundException) {
+            e.printStackTrace()
             return false
         }
+    }
+
+    private fun getIntentShareImage(imageUri: Uri, packageName: String) : Intent {
+        val intent = Intent(Intent.ACTION_SEND)
+        intent.type = "*/*"
+        intent.putExtra(Intent.EXTRA_STREAM, imageUri)
+        intent.putExtra(Intent.EXTRA_TEXT, "Test ABC")
+        intent.`package` = packageName
+        return intent
     }
 
 
