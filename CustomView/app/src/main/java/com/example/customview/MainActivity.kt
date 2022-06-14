@@ -26,11 +26,7 @@ class MainActivity : AppCompatActivity() {
         btnButton = findViewById(R.id.btnButton)
         tvTextView = findViewById(R.id.tvTextView)
         tvOutline = findViewById(R.id.tvOutline)
-//        tvTextView.setStrokeColor(intArrayOf(Color.BLACK,Color.BLACK),10f, intArrayOf(Color.CYAN,Color.WHITE,Color.GREEN))
-//        tvTextView.setGradientColor(intArrayOf(Color.CYAN,Color.WHITE,Color.GREEN))
 
-        tvOutline.setOutlineColor(Color.RED)
-        tvOutline.setOutlineWidth(TypedValue.COMPLEX_UNIT_PX, 3f)
         btnButton.setOnClickListener {
 //            emotionView.invalidate()
             pbValue += 10

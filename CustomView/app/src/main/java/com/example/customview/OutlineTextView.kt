@@ -17,17 +17,22 @@ class OutlineTextView : AppCompatTextView {
 
     constructor(context: Context) : this(context, null)
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
+        context,
+        attrs,
+        defStyleAttr
+    ) {
         if (attrs != null) {
             val a = context.obtainStyledAttributes(attrs, R.styleable.OutlineTextView)
             outlineColor = a.getColor(R.styleable.OutlineTextView_outlineColor, currentTextColor)
-            outlineWidth = a.getDimension(R.styleable.OutlineTextView_outlineWidth, defaultOutlineWidth)
+            outlineWidth =
+                a.getDimension(R.styleable.OutlineTextView_outlineWidth, defaultOutlineWidth)
             a.recycle()
         } else {
             outlineColor = currentTextColor
             outlineWidth = defaultOutlineWidth
         }
-        setOutlineWidth(TypedValue.COMPLEX_UNIT_PX, outlineWidth)
+        setOutlineWidth(TypedValue.COMPLEX_UNIT_DIP, outlineWidth)
     }
 
     fun setOutlineColor(color: Int) {
@@ -50,19 +55,12 @@ class OutlineTextView : AppCompatTextView {
         isDrawing = true
         paint.style = Paint.Style.FILL
         super.onDraw(canvas)
-
         val currentTextColor = currentTextColor
         paint.style = Paint.Style.STROKE
         paint.strokeWidth = outlineWidth
         setTextColor(outlineColor)
         super.onDraw(canvas)
         setTextColor(currentTextColor)
-
         isDrawing = false
-        /*
-        } else {
-            super.onDraw(canvas)
-        }
-         */
     }
 }
