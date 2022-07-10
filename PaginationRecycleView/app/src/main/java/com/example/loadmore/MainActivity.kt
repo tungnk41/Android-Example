@@ -3,6 +3,7 @@ package com.example.loadmore
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -20,12 +21,11 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        mAdapter = InfinityScrollAdapter(this,dataList)
+        mAdapter = InfinityScrollAdapter(this)
         rvList = findViewById(R.id.rvList)
         rvList.adapter = mAdapter
-        initData()
         initInfinityScrollAdapter()
-
+        initData()
     }
 
     private fun initInfinityScrollAdapter() {
@@ -33,8 +33,9 @@ class MainActivity : AppCompatActivity() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 val layoutManager = rvList.layoutManager as GridLayoutManager
+                Log.d("TAG", "onScrolled: " + dy)
                 if(!isLoading) {
-                    if(layoutManager != null && layoutManager.findLastCompletelyVisibleItemPosition() == dataList.size - 1) {
+                    if(layoutManager != null && layoutManager.findLastCompletelyVisibleItemPosition() == mAdapter.itemCount - 1) {
                         isLoading = true
                         loadMore()
                     }
@@ -69,5 +70,6 @@ class MainActivity : AppCompatActivity() {
             dataList.add("Item $i")
             i++
         }
+        mAdapter.submitList(dataList)
     }
 }

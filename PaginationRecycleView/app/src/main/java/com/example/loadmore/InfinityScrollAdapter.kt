@@ -11,9 +11,27 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 
 
-class InfinityScrollAdapter(private val context: Context, private val itemList : List<String?>) : ListAdapter<String?,RecyclerView.ViewHolder>(RvDiffUtil()) {
+class InfinityScrollAdapter(private val context: Context) : ListAdapter<String?,RecyclerView.ViewHolder>(RvDiffUtil()) {
     private val VIEW_TYPE_ITEM = 0
     private val VIEW_TYPE_LOADING = 1
+
+    private inner class ItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        var tvItem: TextView = itemView.findViewById(R.id.tvItem)
+        fun bind(position: Int) {
+            tvItem.text = getItem(position)
+        }
+    }
+
+    private inner class LoadingViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        var progressBar: ProgressBar = itemView.findViewById(R.id.progressBar)
+        fun bind() {
+
+        }
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        return if (getItem(position) == null) VIEW_TYPE_LOADING else VIEW_TYPE_ITEM
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return if (viewType === VIEW_TYPE_ITEM) {
@@ -27,45 +45,19 @@ class InfinityScrollAdapter(private val context: Context, private val itemList :
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if (holder is ItemViewHolder) {
-            showItemDataList((holder as ItemViewHolder?)!!, position)
+            holder.bind(position)
         } else if (holder is LoadingViewHolder) {
-//            showLoadingView((holder as LoadingViewHolder?)!!, position)
+            holder.bind()
         }
     }
+}
 
-    override fun getItemCount(): Int {
-        return itemList.size
+private class RvDiffUtil : DiffUtil.ItemCallback<String?>() {
+    override fun areItemsTheSame(oldItem: String, newItem: String): Boolean {
+        return oldItem == newItem
     }
 
-    override fun getItemViewType(position: Int): Int {
-        return if (itemList[position] == null) VIEW_TYPE_LOADING else VIEW_TYPE_ITEM
-    }
-
-    private class ItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var tvItem: TextView = itemView.findViewById(R.id.tvItem)
-    }
-
-    private class LoadingViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var progressBar: ProgressBar = itemView.findViewById(R.id.progressBar)
-
-    }
-
-    private class RvDiffUtil : DiffUtil.ItemCallback<String?>() {
-        override fun areItemsTheSame(oldItem: String, newItem: String): Boolean {
-            return oldItem == newItem
-        }
-
-        override fun areContentsTheSame(oldItem: String, newItem: String): Boolean {
-            return oldItem.contentEquals(newItem)
-        }
-    }
-
-    private fun showLoadingView(viewHolder: LoadingViewHolder, position: Int) {
-        //ProgressBar would be displayed
-    }
-
-    private fun showItemDataList(viewHolder: ItemViewHolder, position: Int) {
-        val item = itemList[position]
-        viewHolder.tvItem.text = item
+    override fun areContentsTheSame(oldItem: String, newItem: String): Boolean {
+        return oldItem.contentEquals(newItem)
     }
 }

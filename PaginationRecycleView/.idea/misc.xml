@@ -3,6 +3,9 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/tungn/Desktop/Android-Example/PaginationRecycleView/app/src/main/res/layout/activity_main.xml" value="0.5317708333333333" />
+        <entry key="..\:/Users/tungn/Desktop/Android-Example/PaginationRecycleView/app/src/main/res/layout/item_list.xml" value="0.33" />
+        <entry key="..\:/Users/tungn/Desktop/Android-Example/PaginationRecycleView/app/src/main/res/layout/item_loading.xml" value="0.5317708333333333" />
         <entry key="..\:/Users/tungn/Desktop/LoadMore/app/src/main/res/layout/activity_main.xml" value="0.5145833333333333" />
         <entry key="..\:/Users/tungn/Desktop/LoadMore/app/src/main/res/layout/item_list.xml" value="0.5163043478260869" />
         <entry key="..\:/Users/tungn/Desktop/LoadMore/app/src/main/res/layout/item_loading.xml" value="0.5163043478260869" />
