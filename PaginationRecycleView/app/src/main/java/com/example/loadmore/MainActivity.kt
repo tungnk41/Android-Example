@@ -24,27 +24,13 @@ class MainActivity : AppCompatActivity() {
         mAdapter = InfinityScrollAdapter(this)
         rvList = findViewById(R.id.rvList)
         rvList.adapter = mAdapter
-        initInfinityScrollAdapter()
+        rvList.initLoadMore(offset = 1, onRequestToLoadMoreData = { loadMore() })
         initData()
     }
 
-    private fun initInfinityScrollAdapter() {
-        rvList.addOnScrollListener( object: RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                val layoutManager = rvList.layoutManager as GridLayoutManager
-                Log.d("TAG", "onScrolled: " + dy)
-                if(!isLoading) {
-                    if(layoutManager != null && layoutManager.findLastCompletelyVisibleItemPosition() == mAdapter.itemCount - 1) {
-                        isLoading = true
-                        loadMore()
-                    }
-                }
-            }
-        })
-    }
-
     private fun loadMore() {
+        if(isLoading) return
+        isLoading = true
         dataList.add(null)
         mAdapter.notifyItemInserted(dataList.size - 1)
 
