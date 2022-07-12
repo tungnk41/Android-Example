@@ -3,11 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.writelog">
 
-    <uses-permission android:name="android.permission.READ_LOGS"
-        tools:ignore="ProtectedPermissions" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+<!--    <uses-permission android:name="android.permission.READ_LOGS"-->
+<!--        tools:ignore="ProtectedPermissions"/>-->
 
     <application
+        android:name=".LoggerApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"

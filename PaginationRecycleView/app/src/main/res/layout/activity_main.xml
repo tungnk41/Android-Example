@@ -10,7 +10,7 @@
         android:id="@+id/rvList"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:spanCount="2"
         android:orientation="vertical"
         tools:listitem="@layout/item_list"
