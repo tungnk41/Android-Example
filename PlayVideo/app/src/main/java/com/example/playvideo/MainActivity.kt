@@ -6,6 +6,7 @@ import android.view.View
 import android.widget.Button
 import android.widget.ProgressBar
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.MutableLiveData
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
@@ -22,7 +23,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var videoPlayer : ExoPlayer
     private lateinit var btnPlayPause : Button
     private lateinit var progressBar : ProgressBar
-    private var isPlaying: Boolean = false
+    private var isPlaying: MutableLiveData<Boolean> = MutableLiveData(false)
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,25 +33,18 @@ class MainActivity : AppCompatActivity() {
         btnPlayPause = findViewById(R.id.btnPlayPause)
         progressBar = findViewById(R.id.progressBar)
         videoPlayer = ExoPlayer.Builder(this).build()
+        playerView.visibility = View.INVISIBLE
         prepare()
 
         btnPlayPause.setOnClickListener {
-            isPlaying = !isPlaying
-            setPlayButtonState(isPlaying)
-            if(isPlaying) {
-                play()
-            }
-            else {
-                pause()
-            }
+            isPlaying.value = !isPlaying.value!!
         }
 
         videoPlayer.addListener(object : Player.Listener {
             override fun onPlaybackStateChanged(playbackState: Int) {
                 when(playbackState) {
                     STATE_IDLE -> {
-                        isPlaying = true
-                        setPlayButtonState(isPlaying)
+                        isPlaying.value = true
                     }
                     STATE_BUFFERING -> {
                         progressBar.visibility = View.VISIBLE
@@ -59,18 +53,27 @@ class MainActivity : AppCompatActivity() {
                         progressBar.visibility = View.GONE
                     }
                     STATE_ENDED -> {
-                        isPlaying = false
-                        setPlayButtonState(isPlaying)
+                        isPlaying.value = false
                         videoPlayer.seekTo(0)
                         videoPlayer.playWhenReady = false
+                        playerView.visibility = View.INVISIBLE
                     }
                 }
             }
         })
+
+        isPlaying.observe(this) { isPlaying ->
+            setPlayButtonState(isPlaying)
+            if (isPlaying) {
+                play()
+            } else {
+                pause()
+            }
+        }
     }
 
     override fun onPause() {
-        if (isPlaying) {
+        if (isPlaying.value == true) {
             videoPlayer.pause()
         }
         super.onPause()
@@ -78,7 +81,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        if (isPlaying) {
+        if (isPlaying.value == true) {
             videoPlayer.play()
         }
     }
@@ -109,6 +112,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun play() {
+        playerView.visibility = View.VISIBLE
         videoPlayer.play()
     }
 
