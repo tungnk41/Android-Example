@@ -1,16 +1,22 @@
 package com.example.playvideo
 
 
+import android.os.Build
 import android.os.Bundle
-import android.view.View
+import android.util.Log
+import android.view.*
 import android.widget.Button
 import android.widget.ProgressBar
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.MutableLiveData
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.Player.*
+import com.google.android.exoplayer2.source.MediaSource
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.ui.StyledPlayerView
 import com.google.android.exoplayer2.upstream.DataSource
@@ -21,30 +27,36 @@ import com.google.android.exoplayer2.upstream.RawResourceDataSource
 class MainActivity : AppCompatActivity() {
     private lateinit var playerView : StyledPlayerView
     private lateinit var videoPlayer : ExoPlayer
-    private lateinit var btnPlayPause : Button
+    private lateinit var btnOpen : Button
     private lateinit var progressBar : ProgressBar
-    private var isPlaying: MutableLiveData<Boolean> = MutableLiveData(false)
+    private var mediaSourceIntro : MediaSource? = null
+    private var mediaSourceOpen : MediaSource? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        supportActionBar?.hide()
         setContentView(R.layout.activity_main)
         playerView = findViewById(R.id.playerView)
-        btnPlayPause = findViewById(R.id.btnPlayPause)
+        btnOpen = findViewById(R.id.btnOpen)
         progressBar = findViewById(R.id.progressBar)
         videoPlayer = ExoPlayer.Builder(this).build()
-        playerView.visibility = View.INVISIBLE
-        prepare()
-
-        btnPlayPause.setOnClickListener {
-            isPlaying.value = !isPlaying.value!!
+        playerView.player = videoPlayer
+        mediaSourceIntro = prepareIntro()
+        mediaSourceOpen = prepareOpen()
+        setFullScreen()
+        initState()
+        btnOpen.setOnClickListener {
+            mediaSourceOpen?.let {
+                playOpen(it)
+            }
         }
 
         videoPlayer.addListener(object : Player.Listener {
             override fun onPlaybackStateChanged(playbackState: Int) {
                 when(playbackState) {
                     STATE_IDLE -> {
-                        isPlaying.value = true
+
                     }
                     STATE_BUFFERING -> {
                         progressBar.visibility = View.VISIBLE
@@ -53,37 +65,22 @@ class MainActivity : AppCompatActivity() {
                         progressBar.visibility = View.GONE
                     }
                     STATE_ENDED -> {
-                        isPlaying.value = false
                         videoPlayer.seekTo(0)
                         videoPlayer.playWhenReady = false
-                        playerView.visibility = View.INVISIBLE
+                        playerView.alpha = 0f
+                        initState()
                     }
                 }
             }
         })
-
-        isPlaying.observe(this) { isPlaying ->
-            setPlayButtonState(isPlaying)
-            if (isPlaying) {
-                play()
-            } else {
-                pause()
-            }
-        }
     }
 
     override fun onPause() {
-        if (isPlaying.value == true) {
-            videoPlayer.pause()
-        }
         super.onPause()
     }
 
     override fun onResume() {
         super.onResume()
-        if (isPlaying.value == true) {
-            videoPlayer.play()
-        }
     }
 
 
@@ -93,8 +90,21 @@ class MainActivity : AppCompatActivity() {
         super.onDestroy()
     }
 
+    private fun prepareIntro() : MediaSource {
+        val uri = RawResourceDataSource.buildRawResourceUri(R.raw.intro)
+        val rawResourceDataSource = RawResourceDataSource(this)
+        try {
+            rawResourceDataSource.open(DataSpec(uri))
+        }catch (e: Exception) {
+            e.printStackTrace()
+        }
+        val factory: DataSource.Factory = DataSource.Factory { rawResourceDataSource }
+       return ProgressiveMediaSource.Factory(factory)
+            .createMediaSource(MediaItem.fromUri(uri))
 
-    private fun prepare() {
+    }
+
+    private fun prepareOpen() : MediaSource {
         val uri = RawResourceDataSource.buildRawResourceUri(R.raw.test)
         val rawResourceDataSource = RawResourceDataSource(this)
         try {
@@ -103,29 +113,42 @@ class MainActivity : AppCompatActivity() {
             e.printStackTrace()
         }
         val factory: DataSource.Factory = DataSource.Factory { rawResourceDataSource }
-        val mediaSource = ProgressiveMediaSource.Factory(factory)
+        return ProgressiveMediaSource.Factory(factory)
             .createMediaSource(MediaItem.fromUri(uri))
+
+    }
+
+    private fun playIntro(mediaSource : MediaSource) {
         videoPlayer.setMediaSource(mediaSource)
+        videoPlayer.repeatMode = REPEAT_MODE_ONE
         videoPlayer.prepare()
-        videoPlayer.playWhenReady = false
-        playerView.player = videoPlayer
+        videoPlayer.playWhenReady = true
     }
 
-    private fun play() {
-        playerView.visibility = View.VISIBLE
-        videoPlayer.play()
+    private fun playOpen(mediaSource : MediaSource) {
+        videoPlayer.setMediaSource(mediaSource)
+        videoPlayer.repeatMode = REPEAT_MODE_OFF
+        videoPlayer.prepare()
+        videoPlayer.playWhenReady = true
     }
 
-    private fun pause() {
-        videoPlayer.pause()
+    private fun setFullScreen() {
+        window.setFlags(
+            WindowManager.LayoutParams.FLAG_FULLSCREEN,
+            WindowManager.LayoutParams.FLAG_FULLSCREEN
+        )
     }
 
-    private fun setPlayButtonState(isPlaying : Boolean) {
-        if(isPlaying) {
-            btnPlayPause.text = "Pause"
-        }
-        else {
-            btnPlayPause.text = "Play"
+    private fun removeFullScreen() {
+        window.clearFlags(
+            WindowManager.LayoutParams.FLAG_FULLSCREEN
+        )
+    }
+
+    private fun initState() {
+        playerView.alpha = 1f
+        mediaSourceIntro?.let {
+            playIntro(it)
         }
     }
 
