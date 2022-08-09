@@ -1,27 +1,26 @@
 package com.example.playvideo
 
 
-import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import android.widget.Button
 import android.widget.ProgressBar
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.WindowInsetsControllerCompat
-import androidx.lifecycle.MutableLiveData
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.Player.*
+import com.google.android.exoplayer2.database.StandaloneDatabaseProvider
 import com.google.android.exoplayer2.source.MediaSource
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.ui.StyledPlayerView
 import com.google.android.exoplayer2.upstream.DataSource
 import com.google.android.exoplayer2.upstream.DataSpec
 import com.google.android.exoplayer2.upstream.RawResourceDataSource
+import com.google.android.exoplayer2.upstream.cache.CacheDataSource
+import com.google.android.exoplayer2.upstream.cache.LeastRecentlyUsedCacheEvictor
+import com.google.android.exoplayer2.upstream.cache.SimpleCache
+import java.io.File
 
 
 class MainActivity : AppCompatActivity() {
@@ -31,6 +30,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var progressBar : ProgressBar
     private var mediaSourceIntro : MediaSource? = null
     private var mediaSourceOpen : MediaSource? = null
+    private val  cache : SimpleCache by lazy { SimpleCache(File(cacheDir, "videosCacheFolder"),  LeastRecentlyUsedCacheEvictor(90 * 1024 * 1024),
+    StandaloneDatabaseProvider(this)) }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -98,8 +99,12 @@ class MainActivity : AppCompatActivity() {
         }catch (e: Exception) {
             e.printStackTrace()
         }
-        val factory: DataSource.Factory = DataSource.Factory { rawResourceDataSource }
-       return ProgressiveMediaSource.Factory(factory)
+        val dataFactory: DataSource.Factory = DataSource.Factory { rawResourceDataSource }
+        var cacheDataSourceFactory: CacheDataSource.Factory = CacheDataSource.Factory()
+            .setUpstreamDataSourceFactory(dataFactory)
+            .setFlags(CacheDataSource.FLAG_IGNORE_CACHE_ON_ERROR)
+            .setCache(cache)
+       return ProgressiveMediaSource.Factory(cacheDataSourceFactory)
             .createMediaSource(MediaItem.fromUri(uri))
 
     }
@@ -112,8 +117,12 @@ class MainActivity : AppCompatActivity() {
         }catch (e: Exception) {
             e.printStackTrace()
         }
-        val factory: DataSource.Factory = DataSource.Factory { rawResourceDataSource }
-        return ProgressiveMediaSource.Factory(factory)
+        val dataFactory: DataSource.Factory = DataSource.Factory { rawResourceDataSource }
+        var cacheDataSourceFactory: CacheDataSource.Factory = CacheDataSource.Factory()
+            .setUpstreamDataSourceFactory(dataFactory)
+            .setFlags(CacheDataSource.FLAG_IGNORE_CACHE_ON_ERROR)
+            .setCache(cache)
+        return ProgressiveMediaSource.Factory(cacheDataSourceFactory)
             .createMediaSource(MediaItem.fromUri(uri))
 
     }
