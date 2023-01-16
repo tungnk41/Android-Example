@@ -2,16 +2,13 @@ package com.example.processdeath
 
 import android.content.ContentValues.TAG
 import android.content.res.Configuration
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.util.Log
 import android.widget.Button
-import android.widget.EditText
 import android.widget.TextView
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -26,18 +23,19 @@ class MainActivity : AppCompatActivity() {
         tvData = findViewById(R.id.tvData)
         btnSet = findViewById(R.id.btnSet)
 
-//        viewModel.dataViewModel.observe(this) {
-//            tvData.setText(it)
+        Log.d(TAG, "onCreate: " + savedInstanceState?.getInt("data"))
+
+//        savedInstanceState?.let {
+//            tvData.text = (savedInstanceState?.getInt("data") ?: 0).toString()
 //        }
+
+        viewModel.dataViewModel.observe(this) {
+            tvData.text = it.toString()
+        }
         btnSet.setOnClickListener {
             dataTest += 1
             tvData.text = dataTest.toString()
-        }
-
-        Log.d(TAG, "onCreate: " + savedInstanceState?.getInt("data"))
-
-        savedInstanceState?.let {
-            tvData.text = (savedInstanceState?.getInt("data") ?: 0).toString()
+            viewModel.setData(dataTest)
         }
     }
 
@@ -47,16 +45,15 @@ class MainActivity : AppCompatActivity() {
         Log.d(TAG, "onConfigurationChanged: ")
     }
 
-    override fun onRestoreInstanceState(
-        savedInstanceState: Bundle
-    ) {
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         Log.d(TAG, "onRestoreInstanceState: " + savedInstanceState?.getInt("data"))
         super.onRestoreInstanceState(savedInstanceState)
 
     }
+
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         Log.d(TAG, "onSaveInstanceState: ")
-        outState.putInt("data",dataTest)
+        outState.putInt("data", dataTest)
     }
 }

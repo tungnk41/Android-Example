@@ -10,16 +10,19 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class MainViewModel @Inject constructor(private val savedStateHandle: SavedStateHandle) : ViewModel(){
-    var dataViewModel : MutableLiveData<String> = MutableLiveData<String>()
+class MainViewModel @Inject constructor(private val savedStateHandle: SavedStateHandle?) : ViewModel(){
+    var dataViewModel : MutableLiveData<Int> = MutableLiveData<Int>()
 
     init {
-        Log.d(TAG, "MainViewModel : " + savedStateHandle["data"])
+        Log.d(TAG, "MainViewModel : " + (savedStateHandle?.get("data") ?: 0))
+        savedStateHandle?.let {
+            dataViewModel.value = it["data"]
+        }
     }
 
-    fun setData(data: String) {
+    fun setData(data: Int) {
         dataViewModel.value = data
-//        savedStateHandle["data"] = data
+        savedStateHandle?.set("data", data)
     }
 
     override fun onCleared() {
