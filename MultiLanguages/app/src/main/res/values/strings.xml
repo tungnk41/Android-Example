@@ -1,4 +1,4 @@
 <resources>
-    <string name="app_name">MultiLanguages</string>
+    <string name="app_name" translatable="false">MultiLanguages</string>
     <string name="str_hello">Hello</string>
 </resources>

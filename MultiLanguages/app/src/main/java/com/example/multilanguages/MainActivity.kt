@@ -2,10 +2,12 @@ package com.example.multilanguages
 
 import android.content.Context
 import android.content.ContextWrapper
-import androidx.appcompat.app.AppCompatActivity
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
+import androidx.appcompat.app.AppCompatActivity
 import java.util.*
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -23,12 +25,12 @@ class MainActivity : AppCompatActivity() {
 
         btnSetLangEn.setOnClickListener {
             setAppLocale("en")
-            recreate()
+            refeshLayout()
         }
 
         btnSetLangVi.setOnClickListener {
             setAppLocale("vi")
-            recreate()
+            refeshLayout()
         }
     }
 
@@ -39,5 +41,11 @@ class MainActivity : AppCompatActivity() {
         config.setLocale(locale)
         config.setLayoutDirection(locale)
         return createConfigurationContext(config)
+    }
+
+    private fun refeshLayout() {
+        val intent = getIntent()
+        finish();
+        startActivity(intent)
     }
 }
