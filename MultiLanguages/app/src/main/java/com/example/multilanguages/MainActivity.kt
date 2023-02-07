@@ -1,12 +1,13 @@
 package com.example.multilanguages
 
 import android.content.Context
-import android.content.ContextWrapper
-import android.content.Intent
+import android.content.res.Configuration
 import android.os.Bundle
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
-import java.util.*
+import com.example.multilanguages.LocaleManager.LanguageVariant
+import com.example.multilanguages.LocaleManager.LocaleManager
+import com.example.multilanguages.LocaleManager.Utils
 
 
 class MainActivity : AppCompatActivity() {
@@ -15,37 +16,26 @@ class MainActivity : AppCompatActivity() {
     private lateinit var btnSetLangVi: Button
 
     override fun attachBaseContext(newBase: Context?) {
-        super.attachBaseContext(ContextWrapper(newBase?.setAppLocale("en")))
+        super.attachBaseContext(LocaleManager.attachContext(newBase))
     }
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        Utils.resetActivityTitle(this)
         btnSetLangEn = findViewById(R.id.btnSetLangEn)
         btnSetLangVi = findViewById(R.id.btnSetLangVi)
 
         btnSetLangEn.setOnClickListener {
-            setAppLocale("en")
-            refeshLayout()
+            LocaleManager.setLocale(LanguageVariant.ENGLISH)
+            recreate()
         }
 
         btnSetLangVi.setOnClickListener {
-            setAppLocale("vi")
-            refeshLayout()
+            LocaleManager.setLocale(LanguageVariant.VIETNAMESE)
+            recreate()
         }
     }
 
-    fun Context.setAppLocale(language: String): Context {
-        val locale = Locale(language)
-        Locale.setDefault(locale)
-        val config = resources.configuration
-        config.setLocale(locale)
-        config.setLayoutDirection(locale)
-        return createConfigurationContext(config)
-    }
-
-    private fun refeshLayout() {
-        val intent = getIntent()
-        finish();
-        startActivity(intent)
-    }
 }

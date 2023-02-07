@@ -8,21 +8,10 @@ import java.util.*
 
 class App: Application() {
 
-    companion object {
-        lateinit var localeManager: LocaleManager
-    }
 
     override fun onCreate() {
         super.onCreate()
-        localeManager = LocaleManager(this)
+        LocaleManager.init(this)
     }
 
-    override fun attachBaseContext(base: Context?) {
-        super.attachBaseContext(base)
-    }
-
-    override fun onConfigurationChanged(newConfig: Configuration) {
-        super.onConfigurationChanged(newConfig)
-
-    }
 }
