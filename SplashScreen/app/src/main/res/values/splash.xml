@@ -4,7 +4,6 @@
         <item name="windowSplashScreenBackground">#202020</item>
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_android_black_24dp</item>
         <item name="windowSplashScreenAnimationDuration">200</item>
-
         <item name="postSplashScreenTheme">@style/Theme.SplashScreenApp</item>
     </style>
 </resources>
