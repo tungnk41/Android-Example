@@ -1,5 +1,0 @@
-<resources>
-    <string name="app_name" translatable="false">MultiLanguages</string>
-    <string name="str_hello">EN</string>
-    <string name="str_title">EN</string>
-</resources>
